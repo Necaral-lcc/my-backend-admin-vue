@@ -1,11 +1,7 @@
 #!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+# 加入下面这行
 PATH="/usr/local/bin:$PATH"
-
-if [ -f $HOME/.nvm/nvm.sh ]
-then
-  . $HOME/.nvm/nvm.sh
-  PATH="$HOME/.nvm/versions/node/$(nvm current)/bin:$PATH"
-fi
 
 
 pnpm exec lint-staged
