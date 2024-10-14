@@ -1,3 +1,11 @@
+#!/bin/sh
+PATH="/usr/local/bin:$PATH"
+
+if [ -f $HOME/.nvm/nvm.sh ]
+then
+  . $HOME/.nvm/nvm.sh
+  PATH="$HOME/.nvm/versions/node/$(nvm current)/bin:$PATH"
+fi
 
 
 pnpm exec lint-staged
