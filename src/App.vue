@@ -2,6 +2,10 @@
 import { defineCustomElement } from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
 
+const num = 1;
+
+console.log(num);
+
 defineCustomElement(HelloWorld);
 </script>
 
