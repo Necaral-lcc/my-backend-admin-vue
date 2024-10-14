@@ -4,7 +4,7 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 const num = 1;
 
-console.log(num);
+console.log(num + 1);
 
 defineCustomElement(HelloWorld);
 </script>

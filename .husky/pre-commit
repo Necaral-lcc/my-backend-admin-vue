@@ -1,6 +1,5 @@
 
-# 加入下面这行
 PATH="/usr/local/bin:$PATH"
 
 
-pnpm exec lint-staged
+pnpm run lint
