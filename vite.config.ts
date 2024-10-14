@@ -1,62 +1,78 @@
-import { defineConfig, loadEnv } from 'vite'
-import type { UserConfig, ConfigEnv } from 'vite'
-import { include, exclude } from './build/optimize'
-import vue from '@vitejs/plugin-vue'
-import path from 'path'
-import { cwd } from 'process'
-import { separateEnv } from './build/utils'
+import { defineConfig, loadEnv } from "vite";
+import type { UserConfig, ConfigEnv } from "vite";
+import { include, exclude } from "./build/optimize";
+import { cwd } from "process";
+import { alias, pathResolve, __APP_INFO__ } from "./build/utils";
+import { getPlugins } from "./build/plugins";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const {
     VITE_APP_PORT,
-    VITE_APP_TITLE,
     VITE_APP_URL,
     VITE_BASE_URL,
     VITE_REQUEST_API,
     VITE_REQUEST_API_2,
-    VITE_REQUEST_API_3,
-  } = separateEnv(loadEnv(mode, cwd()))
+    VITE_REQUEST_API_3
+  } = loadEnv(mode, cwd());
   return {
-    plugins: [vue()],
+    plugins: getPlugins(),
     server: {
-      port: VITE_APP_PORT,
+      port: Number(VITE_APP_PORT),
       open: true,
       proxy: {
         [VITE_REQUEST_API]: {
           target: VITE_APP_URL,
-          changeOrigin: true,
+          changeOrigin: true
         },
         [VITE_REQUEST_API_2]: {
           target: VITE_APP_URL,
-          changeOrigin: true,
+          changeOrigin: true
         },
         [VITE_REQUEST_API_3]: {
           target: VITE_APP_URL,
-          changeOrigin: true,
-        },
-      },
+          changeOrigin: true
+        }
+      }
     },
     css: {
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler',
-        },
-      },
+          api: "modern-compiler"
+        }
+      }
     },
     base: VITE_BASE_URL,
-    build: {
-      outDir: 'product',
-    },
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-        $: path.resolve(__dirname, './src'),
-      },
+      alias
     },
     optimizeDeps: {
       include,
-      exclude,
+      exclude
     },
-  }
-})
+    build: {
+      outDir: "product",
+      assetsDir: "assets",
+      // https://cn.vitejs.dev/guide/build.html#browser-compatibility
+      target: "es2015",
+      sourcemap: false,
+      // 消除打包大小超过500kb警告
+      chunkSizeWarningLimit: 4000,
+      rollupOptions: {
+        input: {
+          index: pathResolve("./index.html", import.meta.url)
+        },
+        // 静态资源分类打包
+        output: {
+          chunkFileNames: "static/js/[name]-[hash].js",
+          entryFileNames: "static/js/[name]-[hash].js",
+          assetFileNames: "static/[ext]/[name]-[hash].[ext]"
+        }
+      }
+    },
+    define: {
+      __INTLIFY_PROD_DEVTOOLS__: false,
+      __APP_INFO__: JSON.stringify(__APP_INFO__)
+    }
+  };
+});

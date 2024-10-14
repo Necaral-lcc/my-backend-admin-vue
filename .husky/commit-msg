@@ -1,0 +1,8 @@
+
+
+PATH="/usr/local/bin:$PATH"
+
+
+npx --no -- commitlint --edit $1
+
+
