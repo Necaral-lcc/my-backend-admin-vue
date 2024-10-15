@@ -1,9 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useUserStore } from "@/store/user";
+import { useAppStore } from "@/store/app";
+import { ElButton } from "element-plus";
+
+const userStore = useUserStore();
+const appStore = useAppStore();
+
+onMounted(() => {
+  setTimeout(() => {
+    appStore.setTitle("Hello Lcc");
+  }, 5000);
+});
 
 defineProps<{ msg: string }>();
 
 const count = ref(0);
+
+const addStr = () => {
+  appStore.setTitle(appStore.title + "新增字符");
+};
 </script>
 
 <template>
@@ -17,26 +33,14 @@ const count = ref(0);
         <code>components/HelloWorld.vue</code> to test HMR
       </p>
     </div>
+    <el-button type="primary" @click="addStr">新增字符</el-button>
 
-    <p>
-      Check out
-      <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-        >create-vue</a
-      >, the official Vue + Vite starter
-    </p>
-    <p>
-      Learn more about IDE Support for Vue in the
-      <a
-        href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support"
-        target="_blank"
-        >Vue Docs Scaling up Guide</a
-      >.
-    </p>
-    <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+    <div class="read-the-docs">user:{{ userStore.userInfo.id }}</div>
+    <div class="read-the-docs">appStore:{{ appStore.title }}</div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .read-the-docs {
   color: #888;
 }

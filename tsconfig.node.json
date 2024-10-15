@@ -36,5 +36,11 @@
     },
     "types": ["node", "vite/client"]
   },
-  "include": ["mock/*.ts", "types/*.d.ts", "vite.config.ts", "env.d.ts"]
+  "include": [
+    "mock/*.ts",
+    "types/*.d.ts",
+    "vite.config.ts",
+    "env.d.ts",
+    "build/type.d.ts"
+  ]
 }

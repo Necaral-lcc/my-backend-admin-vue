@@ -76,6 +76,7 @@ export default defineFlatConfig([
   },
   {
     files: ["**/*.?([cm])ts", "**/*.?([cm])tsx"],
+    ignores: ["build/type.d.ts"],
     languageOptions: {
       parser: parserTypeScript,
       parserOptions: {
