@@ -32,7 +32,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client", "vue"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*.d.ts"],
   "exclude": ["dist", "**/*.js", "node_modules"]

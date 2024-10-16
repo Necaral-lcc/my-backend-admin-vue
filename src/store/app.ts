@@ -1,16 +1,20 @@
 import { defineStore } from "pinia";
 import { getUtc } from "@/utils";
+import type { ThemeConfig } from "@/style/config";
 
-export type vLanguage = "cn" | "en";
+export type vLanguage = "zh" | "en";
 
-const language = (): vLanguage => "cn";
+const language_default = (): vLanguage => "zh";
+
+const theme_default = (): keyof ThemeConfig => "light";
 
 export const useAppStore = defineStore("app", {
   state() {
     return {
       title: "My Backend Admin Vue",
-      i18n: language(),
-      utc: getUtc()
+      i18n: language_default(),
+      utc: getUtc(),
+      theme: theme_default()
     };
   },
   actions: {
@@ -18,13 +22,16 @@ export const useAppStore = defineStore("app", {
       this.i18n = "en";
     },
     resetLanguage() {
-      this.i18n = "cn";
+      this.i18n = language_default();
     },
     setUtc(utc?: number) {
       this.utc = utc ? Math.floor(utc) : getUtc();
     },
     setTitle(title: string) {
       this.title = title;
+    },
+    setTheme(theme: keyof ThemeConfig) {
+      this.theme = theme;
     }
   }
 });

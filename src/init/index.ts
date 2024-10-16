@@ -1,6 +1,7 @@
 import type { App } from "vue";
-import { i18n_init } from "./i18n";
+import { useI18n } from "./i18n";
+import { elementPlus_init } from "./elementPlus";
 
 export function init(app: App) {
-  app.use(i18n_init);
+  app.use(useI18n).use(elementPlus_init);
 }

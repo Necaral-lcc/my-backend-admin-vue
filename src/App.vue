@@ -1,34 +1,49 @@
 <script setup lang="ts">
-import { reactive, defineCustomElement, ref } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
-import { ElSlider } from "element-plus";
+import { reactive, onMounted, watch } from "vue";
 
-const num = 1;
+import { useThemes } from "@/init/color";
+import { themes } from "@/style/config";
+import { useAppStore } from "@/store/app";
+import { useI18n } from "vue-i18n";
 
-console.log(num + 1);
+const { locale } = useI18n();
 
-const { color, size } = reactive({
-  color: "red",
-  size: 24
+const appStore = useAppStore();
+
+const customStyle = reactive({
+  lineColor: "red",
+  commitColor: "blue",
+  mainTitleFontsize: "32px"
 });
 
-const fontSize = ref(24);
+const setTheme = useThemes(themes, customStyle);
 
-defineCustomElement(HelloWorld);
+onMounted(() => {
+  setTheme(appStore.theme);
+});
+
+watch(
+  () => appStore.i18n,
+  val => {
+    locale.value = val;
+  }
+);
+watch(
+  () => appStore.theme,
+  val => {
+    setTheme(val);
+  }
+);
 </script>
 
 <template>
-  <div>
-    <HelloWorld msg="Vite + Vue" />
-    <div class="title">home :123123</div>
-    <el-slider v-model="fontSize" />
-  </div>
+  <router-view />
 </template>
 
 <style scoped>
-.logo {
-  font-size: 20px;
+.title {
+  background-color: var(--custom-background-color);
+  color: var(--custom-text-color);
+  font-size: var(--custom-main-title-fontsize);
 }
 </style>
-
-<style></style>

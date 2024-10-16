@@ -55,5 +55,6 @@
   ],
   "vscodeCustomCodeColor.highlightValueColor": "#b392f0",
   "vetur.validation.script": false,
-  "vetur.validation.style": false
+  "vetur.validation.style": false,
+  "cSpell.words": ["colord", "Pinia"]
 }
