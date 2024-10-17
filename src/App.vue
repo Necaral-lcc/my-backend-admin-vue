@@ -70,7 +70,7 @@ watch(
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(100%);
   opacity: 0;
+  transform: translateX(100%);
 }
 </style>
