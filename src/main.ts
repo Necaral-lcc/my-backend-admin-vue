@@ -18,6 +18,14 @@ import "element-plus/theme-chalk/display.css";
 
 const app = createApp(App);
 app.use(router);
-console.log("router", router.isReady());
+
+router
+  .isReady()
+  .then(res => {
+    console.log("路由准备就绪", res);
+  })
+  .catch(err => {
+    console.log("路由未准备就绪", err);
+  });
 
 app.use(init).use(store).mount("#app");

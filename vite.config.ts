@@ -20,6 +20,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     server: {
       port: Number(VITE_APP_PORT),
       open: true,
+      host: "0.0.0.0",
       proxy: {
         [VITE_REQUEST_API]: {
           target: VITE_APP_URL,

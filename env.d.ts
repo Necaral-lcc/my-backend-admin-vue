@@ -1,5 +1,3 @@
-
-
 interface VImportMetaEnv {
   readonly VITE_APP_PORT: number;
   readonly VITE_APP_TITLE: string;
@@ -8,6 +6,7 @@ interface VImportMetaEnv {
   readonly VITE_BASE_URL: string;
   readonly VITE_REQUEST_API_2: string;
   readonly VITE_REQUEST_API_3: string;
+  readonly VITE_APP_TOKEN_KEY: string;
 }
 
 interface VImportMeta {

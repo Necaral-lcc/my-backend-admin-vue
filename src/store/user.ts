@@ -15,18 +15,33 @@ const router_default: vUserRouter[] = [];
 
 const permission_default: string[] = [];
 
+const strArr: string[] = [];
+
 export const useUserStore = defineStore("user", {
   state() {
     return {
       userInfo: userInfo_default,
       jwt: "",
       router: router_default,
-      permission: permission_default
+      permission: permission_default,
+      isLogin: false,
+      cacheViews: strArr
     };
+  },
+  getters: {
+    getLoginState(state) {
+      return state.isLogin;
+    }
   },
   actions: {
     setUserInfo(userInfo: vUserInfo) {
       this.userInfo = userInfo;
+    },
+    login() {
+      this.isLogin = true;
+    },
+    logout() {
+      this.isLogin = false;
     },
     setJwt(jwt: string) {
       this.jwt = jwt;
@@ -42,6 +57,18 @@ export const useUserStore = defineStore("user", {
       this.jwt = "";
       this.router = router_default;
       this.permission = permission_default;
+    },
+    addCacheView(view: string) {
+      if (this.cacheViews.includes(view)) {
+        return;
+      }
+      this.cacheViews.push(view);
+    },
+    removeCacheView(view: string) {
+      this.cacheViews = this.cacheViews.filter(item => item !== view);
+    },
+    clearCacheViews() {
+      this.cacheViews = [];
     }
   }
 });
