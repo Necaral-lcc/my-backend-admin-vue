@@ -10,7 +10,7 @@ export const privateRoutes: RouteRecordRaw = {
   children: [
     {
       path: "",
-      name: "main",
+      name: "dashboard",
       meta: {
         needLogin: true,
         title: "数据展示"
@@ -18,8 +18,8 @@ export const privateRoutes: RouteRecordRaw = {
       children: [
         {
           path: "",
-          name: "mainTotal",
-          component: () => import("@/views/main/total/index.vue"),
+          name: "dashboardTotal",
+          component: () => import("@/views/dashboard/total/index.vue"),
           meta: {
             needLogin: true,
             title: "统计"
@@ -27,8 +27,8 @@ export const privateRoutes: RouteRecordRaw = {
         },
         {
           path: "dash",
-          name: "mainDash",
-          component: () => import("@/views/main/dash/index.vue"),
+          name: "dashboardDash",
+          component: () => import("@/views/dashboard/dash/index.vue"),
           meta: {
             needLogin: true,
             title: "数据"
@@ -85,3 +85,90 @@ export const privateRoutes: RouteRecordRaw = {
     }
   ]
 };
+
+export const privateRoutesRes: vRoute[] = [
+  {
+    id: 1,
+    path: "/dashboard",
+    name: "dashboard",
+    title: "数据展示",
+    component: "",
+    type: "folder",
+    keepAlive: false,
+    needLogin: true,
+    children: [
+      {
+        id: 11,
+        path: "total",
+        name: "dashboardTotal",
+        title: "数据展示",
+        component: "dashboard/total",
+        type: "page",
+        keepAlive: false,
+        needLogin: true
+      },
+      {
+        id: 12,
+        path: "dash",
+        name: "dashboardDash",
+        title: "数据展示",
+        component: "dashboard/dash",
+        type: "page",
+        keepAlive: false,
+        needLogin: true
+      }
+    ]
+  },
+  {
+    id: 2,
+    path: "/system",
+    name: "system",
+    title: "系统管理",
+    type: "folder",
+    redirect: "/system/admin",
+    keepAlive: false,
+    needLogin: true,
+    children: [
+      {
+        id: 21,
+        path: "admin",
+        name: "systemAdmin",
+        title: "后台人员管理",
+        component: "system/admin",
+        type: "page",
+        keepAlive: true,
+        needLogin: true
+      },
+      {
+        id: 22,
+        path: "dept",
+        name: "systemDept",
+        title: "怒们管理",
+        component: "system/dept",
+        type: "page",
+        keepAlive: true,
+        needLogin: true
+      },
+      {
+        id: 23,
+        path: "menu",
+        name: "systemMenu",
+        title: "权限管理",
+        component: "system/menu",
+        type: "page",
+        keepAlive: true,
+        needLogin: true
+      },
+      {
+        id: 24,
+        path: "role",
+        name: "systemRole",
+        title: "角色管理",
+        component: "system/role",
+        type: "page",
+        keepAlive: true,
+        needLogin: true
+      }
+    ]
+  }
+];

@@ -1,15 +1,17 @@
 import type { RouteRecordRaw } from "vue-router";
 
-export const publicRoutes: RouteRecordRaw[] = [
-  {
-    path: "/",
-    name: "home",
-    meta: {
-      needLogin: true,
-      title: "首页"
-    },
-    children: []
+export const homeRouter: RouteRecordRaw = {
+  path: "/",
+  name: "home",
+  meta: {
+    needLogin: true,
+    title: "首页"
   },
+  children: []
+};
+
+export const publicRoutes: RouteRecordRaw[] = [
+  homeRouter,
   {
     path: "/login",
     name: "login",

@@ -4,3 +4,11 @@ export const getRoute = (num: number) =>
       resolve(`Route ${num}`);
     }, 300);
   });
+
+export const login = (num: number) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(num);
+    }, 1000 * num);
+  });
+};

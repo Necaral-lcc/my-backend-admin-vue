@@ -1,4 +1,8 @@
 import { defineStore } from "pinia";
+import { getRoute } from "@/api";
+import { convertRoutes } from "@/utils/route";
+import { privateRoutesRes } from "@/router/list";
+import type { RouteRecordRaw } from "vue-router";
 
 const userInfo_default: vUserInfo = {
   id: 0,
@@ -6,12 +10,12 @@ const userInfo_default: vUserInfo = {
   email: "",
   phone: "",
   avatar: "",
-  roles: "",
+  role: "",
   permissions: [],
   router: []
 };
 
-const router_default: vUserRouter[] = [];
+const router_default: vRoute[] = [];
 
 const permission_default: string[] = [];
 
@@ -46,7 +50,7 @@ export const useUserStore = defineStore("user", {
     setJwt(jwt: string) {
       this.jwt = jwt;
     },
-    setRouter(router: vUserRouter[]) {
+    setRouter(router: vRoute[]) {
       this.router = router;
     },
     setPermission(permission: vUserPermission[]) {
@@ -69,6 +73,15 @@ export const useUserStore = defineStore("user", {
     },
     clearCacheViews() {
       this.cacheViews = [];
+    },
+    async getRoutes(): Promise<RouteRecordRaw[]> {
+      const result = await getRoute(300);
+      if (result) {
+        this.router = privateRoutesRes;
+        return convertRoutes(privateRoutesRes);
+      } else {
+        return [];
+      }
     }
   }
 });

@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { publicRoutes } from "./public";
+import { publicRoutes, homeRouter } from "./public";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { getRoute } from "@/api";
 import { isLogin, removeToken } from "@/utils/auth";
-import { privateRoutes } from "./list";
 import { useUserStore } from "@/store/user";
+import { addToHomeRouter } from "@/utils/route";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,13 +34,14 @@ router.beforeEach(async (to, _from) => {
       }
       NProgress.done();
     } else {
-      const result = await getRoute(200);
-
-      if (result) {
+      const result = await userStore.getRoutes();
+      if (Array.isArray(result) && result.length > 0) {
         userStore.login();
         router.removeRoute("home");
-        router.addRoute(privateRoutes);
-        const routeExists = router.getRoutes().some(r => r.path === to.path);
+        router.addRoute(addToHomeRouter(homeRouter, result));
+        const routesExist = router.getRoutes();
+        const routeExists = routesExist.some(r => r.path === to.path);
+        console.log("routesExist", routesExist);
 
         NProgress.done();
         return {

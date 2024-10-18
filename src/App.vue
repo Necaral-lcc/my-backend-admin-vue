@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { reactive, onMounted, watch } from "vue";
-
 import { useThemes } from "@/init/color";
 import { themes } from "@/style/config";
 import { useAppStore } from "@/store/app";
-import { useUserStore } from "./store/user";
 import { useI18n } from "vue-i18n";
-
 const { locale } = useI18n();
-
 const appStore = useAppStore();
-
-const userStore = useUserStore();
 
 const customStyle = reactive({
   lineColor: "red",
@@ -40,13 +34,7 @@ watch(
 </script>
 
 <template>
-  <router-view v-slot="{ Component, route }">
-    <transition name="slide-fade">
-      <KeepAlive :include="userStore.cacheViews">
-        <component :is="Component" :key="route.fullPath" />
-      </KeepAlive>
-    </transition>
-  </router-view>
+  <router-view />
 </template>
 
 <style>
