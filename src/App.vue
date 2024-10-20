@@ -4,6 +4,8 @@ import { useThemes } from "@/init/color";
 import { themes } from "@/style/config";
 import { useAppStore } from "@/store/app";
 import { useI18n } from "vue-i18n";
+import { useWindowResize } from "@/hooks/useWindowResize";
+
 const { locale } = useI18n();
 const appStore = useAppStore();
 
@@ -14,6 +16,7 @@ const customStyle = reactive({
 });
 
 const setTheme = useThemes(themes, customStyle);
+const windowSize = useWindowResize();
 
 onMounted(() => {
   setTheme(appStore.theme);
@@ -25,6 +28,14 @@ watch(
     locale.value = val;
   }
 );
+
+watch(
+  () => windowSize.level,
+  val => {
+    console.log("window level changed", val);
+  }
+);
+
 watch(
   () => appStore.theme,
   val => {

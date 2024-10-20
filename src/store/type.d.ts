@@ -16,7 +16,7 @@ interface vUserInfo {
   avatar: string;
   phone: string;
   role: string;
-  router: vRoute[];
+  routers: vRoute[];
   permissions: vUserPermission[];
 }
 

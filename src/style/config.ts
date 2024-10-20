@@ -7,6 +7,8 @@ export interface StyleConfig {
   infoColor: string;
   textColor: string;
   backgroundColor: string;
+  contentColor: string;
+  contentBackgroundColor: string;
   borderColor: string;
   borderRadius: string;
   boxShadow: string;
@@ -32,6 +34,8 @@ export const themes: ThemeConfig = {
     infoColor: "#2196f3",
     textColor: "#212121",
     backgroundColor: "#fff",
+    contentBackgroundColor: "#F0F2F5",
+    contentColor: "#F0F2F5",
     borderColor: "#e0e0e0",
     borderRadius: "2px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.15)",
@@ -50,6 +54,8 @@ export const themes: ThemeConfig = {
     infoColor: "#2196f3",
     textColor: "#fff",
     backgroundColor: "#303030",
+    contentBackgroundColor: "#F0F2F5",
+    contentColor: "#fff",
     borderColor: "#424242",
     borderRadius: "2px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.15)",

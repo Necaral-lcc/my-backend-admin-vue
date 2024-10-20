@@ -41,8 +41,6 @@ router.beforeEach(async (to, _from) => {
         router.addRoute(addToHomeRouter(homeRouter, result));
         const routesExist = router.getRoutes();
         const routeExists = routesExist.some(r => r.path === to.path);
-        console.log("routesExist", routesExist);
-
         NProgress.done();
         return {
           path: routeExists ? to.fullPath : "/",

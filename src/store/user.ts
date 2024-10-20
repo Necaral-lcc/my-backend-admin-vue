@@ -12,10 +12,10 @@ const userInfo_default: vUserInfo = {
   avatar: "",
   role: "",
   permissions: [],
-  router: []
+  routers: []
 };
 
-const router_default: vRoute[] = [];
+const routers_default: vRoute[] = [];
 
 const permission_default: string[] = [];
 
@@ -26,7 +26,7 @@ export const useUserStore = defineStore("user", {
     return {
       userInfo: userInfo_default,
       jwt: "",
-      router: router_default,
+      routers: routers_default,
       permission: permission_default,
       isLogin: false,
       cacheViews: strArr
@@ -50,8 +50,8 @@ export const useUserStore = defineStore("user", {
     setJwt(jwt: string) {
       this.jwt = jwt;
     },
-    setRouter(router: vRoute[]) {
-      this.router = router;
+    setRouter(routers: vRoute[]) {
+      this.routers = routers;
     },
     setPermission(permission: vUserPermission[]) {
       this.permission = permission;
@@ -59,7 +59,7 @@ export const useUserStore = defineStore("user", {
     reset() {
       this.userInfo = userInfo_default;
       this.jwt = "";
-      this.router = router_default;
+      this.routers = routers_default;
       this.permission = permission_default;
     },
     addCacheView(view: string) {
@@ -77,7 +77,7 @@ export const useUserStore = defineStore("user", {
     async getRoutes(): Promise<RouteRecordRaw[]> {
       const result = await getRoute(300);
       if (result) {
-        this.router = privateRoutesRes;
+        this.routers = privateRoutesRes;
         return convertRoutes(privateRoutesRes);
       } else {
         return [];
