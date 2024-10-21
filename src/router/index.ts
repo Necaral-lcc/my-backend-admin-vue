@@ -8,7 +8,8 @@ import { addToHomeRouter } from "@/utils/route";
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: publicRoutes
+  routes: publicRoutes,
+  strict: true
 });
 
 router.beforeEach(async (to, _from) => {
@@ -38,8 +39,6 @@ router.beforeEach(async (to, _from) => {
       if (Array.isArray(result) && result.length > 0) {
         userStore.login();
         router.removeRoute("home");
-        console.log("result", result);
-
         router.addRoute(addToHomeRouter(homeRouter, result));
         const routesExist = router.getRoutes();
         const routeExists = routesExist.some(r => r.path === to.path);

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { getRoute } from "@/api";
-import { convertRoutes } from "@/utils/route";
+import { convertRouters } from "@/utils/route";
 import { privateRoutesRes } from "@/router/list";
 import type { RouteRecordRaw } from "vue-router";
 
@@ -78,7 +78,7 @@ export const useUserStore = defineStore("user", {
       const result = await getRoute(300);
       if (result) {
         this.routers = privateRoutesRes;
-        return convertRoutes(privateRoutesRes);
+        return convertRouters(privateRoutesRes);
       } else {
         return [];
       }

@@ -13,7 +13,7 @@ const router = useRouter();
 
 const toDashboard = () => {
   router.push({
-    path: "/dash"
+    path: "/dashboard/dash"
   });
 };
 </script>

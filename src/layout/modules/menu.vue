@@ -79,7 +79,14 @@ const handleOpen = (key: string) => {
 const handleClose = () => {};
 
 const toPage = (name: string) => {
-  router.push({ name });
+  // router.push({ name });
+  const routerExits = router.getRoutes();
+  console.log("routerExits", routerExits);
+
+  const tarRouter = routerExits.find(item => item.name === name);
+  if (tarRouter) {
+    router.push(tarRouter.path);
+  }
   $emit("jump");
 };
 </script>
