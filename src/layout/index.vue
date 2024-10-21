@@ -87,8 +87,8 @@ $header-height: 50px;
   height: 100%;
 
   > div {
-    transition: width 1s ease-in-out;
     overflow: hidden;
+    transition: width 1s ease-in-out;
   }
 
   .nav {

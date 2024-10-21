@@ -90,9 +90,9 @@ const toPage = (name: string) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 64px;
     font-size: var(--custom-font-size-title);
     font-weight: bold;
-    height: 64px;
     cursor: pointer;
   }
 }
