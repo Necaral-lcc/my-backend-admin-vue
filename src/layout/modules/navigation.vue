@@ -62,11 +62,11 @@ const toggleMenus = () => {
 <style lang="scss" scoped>
 .navigation {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   height: 60px;
-  border: 1px solid var(--custom-border-color);
   padding: 0 10px;
+  border: 1px solid var(--custom-border-color);
 
   > div {
     display: flex;

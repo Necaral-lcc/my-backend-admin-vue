@@ -69,13 +69,13 @@ const getTagType = (
 .cache {
   display: flex;
   align-items: center;
-  scroll-snap-type: y mandatory;
-  overflow-y: auto;
   height: 32px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
 
   .el-tag {
-    cursor: pointer;
     margin-left: 8px;
+    cursor: pointer;
   }
 }
 </style>
