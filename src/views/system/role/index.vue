@@ -2,4 +2,8 @@
   <div>role</div>
 </template>
 
-<script setup></script>
+<script setup lang="ts" name="systemRole">
+defineOptions({
+  name: "systemMenu"
+});
+</script>

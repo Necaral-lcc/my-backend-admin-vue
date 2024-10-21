@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <div v-if="menuStatus" class="nav">
-      <Menu :list="userStore.routers" :fold="appStore.level == 3" />
+      <Menu :list="userStore.routers" :fold="appStore.level == 2" />
     </div>
     <div v-else>
       <el-drawer
@@ -26,8 +26,8 @@
     <div class="content">
       <router-view v-slot="{ Component, route }">
         <transition name="slide-fade">
-          <KeepAlive :include="userStore.cacheViews">
-            <component :is="Component" :key="route.fullPath" />
+          <KeepAlive :include="cacheViews" :max="10">
+            <component :is="Component" :key="route.name" />
           </KeepAlive>
         </transition>
       </router-view>
@@ -49,7 +49,7 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const drawer = ref(false);
 const menuStatus = computed<boolean>(() => {
-  if (appStore.level >= 3) {
+  if (appStore.level >= 2) {
     return true;
   } else {
     return false;
@@ -62,6 +62,16 @@ watch(
       drawer.value = false;
     }
   }
+);
+
+const cacheViews = computed<string[]>(() =>
+  userStore.cacheViews
+    .filter(item => item.meta.keepAlive)
+    .map(item => {
+      console.log("cacheViews", item.name);
+
+      return item.name as string;
+    })
 );
 
 const handleMenuClose = () => {

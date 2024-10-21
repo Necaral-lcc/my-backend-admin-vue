@@ -5,7 +5,7 @@ export const homeRouter: RouteRecordRaw = {
   name: "main",
   meta: {
     needLogin: true,
-    title: "首页"
+    title: ""
   },
   children: [
     {
@@ -13,7 +13,7 @@ export const homeRouter: RouteRecordRaw = {
       name: "home",
       component: () => import("@/layout/index.vue"),
       meta: {
-        title: "首页",
+        title: "",
         needLogin: true,
         KeepAlive: false
       },

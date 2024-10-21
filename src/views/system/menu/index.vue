@@ -2,4 +2,8 @@
   <div>menu</div>
 </template>
 
-<script setup></script>
+<script setup lang="ts" name="systemMenu">
+defineOptions({
+  name: "systemMenu"
+});
+</script>

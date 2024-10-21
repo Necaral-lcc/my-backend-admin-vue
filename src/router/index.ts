@@ -41,10 +41,13 @@ router.beforeEach(async (to, _from) => {
         router.removeRoute("home");
         router.addRoute(addToHomeRouter(homeRouter, result));
         const routesExist = router.getRoutes();
-        const routeExists = routesExist.some(r => r.path === to.path);
+        const routeExists = routesExist.filter(r => r.path === to.path);
+        if (routeExists.length) {
+          userStore.addCacheView(routeExists[0]);
+        }
         NProgress.done();
         return {
-          path: routeExists ? to.fullPath : "/",
+          path: routeExists.length ? to.fullPath : "/",
           replace: true
         };
       } else {

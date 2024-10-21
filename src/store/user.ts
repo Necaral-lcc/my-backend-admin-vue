@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { getRoute } from "@/api";
 import { convertRouters } from "@/utils/route";
 import { privateRoutesRes } from "@/router/list";
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 
 const userInfo_default: vUserInfo = {
   id: 0,
@@ -19,7 +19,7 @@ const routers_default: vRoute[] = [];
 
 const permission_default: string[] = [];
 
-const strArr: string[] = [];
+const viewArr: RouteRecordNormalized[] = [];
 
 export const useUserStore = defineStore("user", {
   state() {
@@ -29,12 +29,15 @@ export const useUserStore = defineStore("user", {
       routers: routers_default,
       permission: permission_default,
       isLogin: false,
-      cacheViews: strArr
+      cacheViews: viewArr
     };
   },
   getters: {
     getLoginState(state) {
       return state.isLogin;
+    },
+    getCacheViews(state) {
+      return state.cacheViews;
     }
   },
   actions: {
@@ -62,14 +65,16 @@ export const useUserStore = defineStore("user", {
       this.routers = routers_default;
       this.permission = permission_default;
     },
-    addCacheView(view: string) {
-      if (this.cacheViews.includes(view)) {
+    addCacheView(view: RouteRecordNormalized) {
+      const index = this.cacheViews.findIndex(item => item.name === view.name);
+      if (index >= 0) {
         return;
       }
       this.cacheViews.push(view);
+      console.log("add cache view", view.name, this.cacheViews);
     },
-    removeCacheView(view: string) {
-      this.cacheViews = this.cacheViews.filter(item => item !== view);
+    removeCacheView(view: RouteRecordNormalized) {
+      this.cacheViews = this.cacheViews.filter(item => item.name !== view.name);
     },
     clearCacheViews() {
       this.cacheViews = [];
