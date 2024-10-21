@@ -8,7 +8,9 @@ import router from "@/router";
 import "./style/reset.scss";
 // 导入公共样式
 import "./style/index.scss";
-
+import "./style/element-plus.scss";
+import "./style/custom-element-plus.scss";
+import "./style/transition.scss";
 import "element-plus/dist/index.css";
 
 const app = createApp(App);

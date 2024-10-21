@@ -1,11 +1,63 @@
 <template>
-  <div>123123 {{ fold ? "收起" : "展开" }}</div>
+  <div class="menu">
+    <div class="logo" title="返回首页" @click="toPage('homeIndex')">
+      {{ name }}
+    </div>
+    <el-menu
+      class="el-menu-vertical-demo"
+      :collapse="fold"
+      :default-active="menuActive"
+      @open="handleOpen"
+      @close="handleClose"
+    >
+      <template v-for="item in routes">
+        <el-sub-menu
+          v-if="item.type === 'folder'"
+          :key="item.id"
+          :index="item.name"
+          :title="item.title"
+        >
+          <template #title>
+            <el-icon><location /></el-icon>
+            <span>{{ item.title }}</span>
+          </template>
+          <el-menu-item
+            v-for="child in item.children"
+            :key="child.name"
+            :index="child.name"
+            @click="toPage(child.name)"
+          >
+            <el-icon><document /></el-icon>
+            <span>{{ child.title }}</span>
+          </el-menu-item>
+        </el-sub-menu>
+        <el-menu-item v-else :key="item.name" :index="item.name">{{
+          item.title
+        }}</el-menu-item>
+      </template>
+    </el-menu>
+  </div>
 </template>
 
 <script setup lang="ts" name="Menu">
-import { onBeforeMount } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
+import { ElMenu, ElMenuItem, ElSubMenu, ElIcon } from "element-plus";
+import { Location, Document } from "@element-plus/icons-vue";
+import { useRouter, useRoute } from "vue-router";
 
-defineProps({
+const name = ref(import.meta.env.VITE_APP_TITLE);
+const router = useRouter();
+const route = useRoute();
+const routes = computed<vRoute[]>(() => list as vRoute[]);
+const menuActive = computed(() => {
+  if (typeof route.name === "string" && route.name) {
+    return route.name;
+  } else {
+    return "";
+  }
+});
+
+const { list, fold } = defineProps({
   list: {
     default: (): vRoute[] => [],
     type: Array
@@ -16,5 +68,32 @@ defineProps({
   }
 });
 
+const $emit = defineEmits(["jump"]);
+
 onBeforeMount(() => {});
+
+const handleOpen = (key: string) => {
+  console.log(key);
+};
+
+const handleClose = () => {};
+
+const toPage = (name: string) => {
+  router.push({ name });
+  $emit("jump");
+};
 </script>
+
+<style lang="scss" scoped>
+.menu {
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--custom-font-size-title);
+    font-weight: bold;
+    height: 64px;
+    cursor: pointer;
+  }
+}
+</style>

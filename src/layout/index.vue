@@ -1,18 +1,27 @@
 <template>
   <div class="layout">
-    <div v-if="isNavShow" class="nav">
-      <div class="logo">logo</div>
-      <div class="menu">
-        <Menu :list="userStore.routers" :fold="isNavFold" />
-      </div>
+    <div v-if="menuStatus" class="nav">
+      <Menu :list="userStore.routers" :fold="appStore.level == 3" />
+    </div>
+    <div v-else>
+      <el-drawer
+        v-model="drawer"
+        direction="ltr"
+        :with-header="false"
+        :before-close="handleMenuClose"
+        :append-to-body="true"
+        class="menu-drawer"
+      >
+        <Menu :list="userStore.routers" @jump="jumpPage" />
+      </el-drawer>
     </div>
     <div class="header">
-      <div class="header-navigation">
-        <Navigation />
-      </div>
-      <div class="header-cache">
-        <Cache />
-      </div>
+      <Navigation
+        :menuStatus="menuStatus"
+        :menuShow="drawer"
+        @toggle-menu="toggleMenu"
+      />
+      <Cache />
     </div>
     <div class="content">
       <router-view v-slot="{ Component, route }">
@@ -31,11 +40,40 @@ import { useUserStore } from "@/store/user";
 import Menu from "./modules/menu.vue";
 import Navigation from "./modules/navigation.vue";
 import Cache from "./modules/cache.vue";
-import { ref } from "vue";
+import { useAppStore } from "@/store/app";
+import { ElDrawer } from "element-plus";
+import { computed, ref, watch } from "vue";
+
+const appStore = useAppStore();
 
 const userStore = useUserStore();
-const isNavFold = ref(false);
-const isNavShow = ref(false);
+const drawer = ref(false);
+const menuStatus = computed<boolean>(() => {
+  if (appStore.level >= 3) {
+    return true;
+  } else {
+    return false;
+  }
+});
+watch(
+  () => menuStatus,
+  val => {
+    if (val) {
+      drawer.value = false;
+    }
+  }
+);
+
+const handleMenuClose = () => {
+  drawer.value = false;
+};
+const toggleMenu = () => {
+  drawer.value = !drawer.value;
+};
+
+const jumpPage = (_: string) => {
+  drawer.value = false;
+};
 </script>
 
 <style scoped lang="scss">
@@ -49,15 +87,14 @@ $header-height: 50px;
   height: 100%;
 
   > div {
-    transition: all 0.3s ease-in-out;
+    transition: width 1s ease-in-out;
+    overflow: hidden;
   }
 
   .nav {
     grid-area: nav;
-    width: 160px;
     height: 100%;
-    overflow: hidden;
-    background-color: var(--custom-primary-color);
+    background-color: var(--custom-background-color);
 
     .logo {
       height: $header-height;
@@ -66,16 +103,23 @@ $header-height: 50px;
 
   .header {
     grid-area: header;
-    height: $header-height;
-    overflow: hidden;
     background-color: var(--custom-background-color);
   }
 
   .content {
     position: relative;
     grid-area: content;
-    overflow: hidden;
     background-color: var(--custom-content-background-color);
   }
+}
+</style>
+
+<style>
+.menu-drawer {
+  width: fit-content !important;
+}
+
+.menu-drawer .el-drawer__body {
+  padding: 0;
 }
 </style>

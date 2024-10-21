@@ -14,6 +14,7 @@ export interface StyleConfig {
   boxShadow: string;
   fontFamily: string;
   fontSize: string;
+  fontSizeTitle: string;
   fontWeight: string;
   lineHeight: string;
   letterSpacing: string;
@@ -41,6 +42,7 @@ export const themes: ThemeConfig = {
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.15)",
     fontFamily: "Roboto, sans-serif",
     fontSize: "14px",
+    fontSizeTitle: "18px",
     fontWeight: "400",
     lineHeight: "1.5",
     letterSpacing: "0.01em"
@@ -61,6 +63,8 @@ export const themes: ThemeConfig = {
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.15)",
     fontFamily: "Roboto, sans-serif",
     fontSize: "14px",
+    fontSizeTitle: "18px",
+
     fontWeight: "400",
     lineHeight: "1.5",
     letterSpacing: "0.01em"

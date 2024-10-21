@@ -143,7 +143,7 @@ export const privateRoutesRes: vRoute[] = [
         id: 22,
         path: "dept",
         name: "systemDept",
-        title: "怒们管理",
+        title: "部门管理",
         component: "system/dept",
         type: "page",
         keepAlive: true,

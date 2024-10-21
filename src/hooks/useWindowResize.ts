@@ -7,12 +7,13 @@ export const useWindowResize = () => {
     level: 4
   });
 
-  function onResize(_: UIEvent) {
+  function onResize(_?: UIEvent) {
     windowSize.width = window.innerWidth;
     windowSize.type = getSizeName(windowSize.width);
     windowSize.level = windowSizeName.indexOf(windowSize.type);
   }
   onMounted(() => {
+    onResize();
     window.addEventListener("resize", onResize);
   });
   onBeforeUnmount(() => {

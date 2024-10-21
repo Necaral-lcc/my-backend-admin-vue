@@ -14,7 +14,8 @@ export const useAppStore = defineStore("app", {
       title: "My Backend Admin Vue",
       i18n: language_default(),
       utc: getUtc(),
-      theme: theme_default()
+      theme: theme_default(),
+      level: 9
     };
   },
   actions: {
@@ -32,6 +33,9 @@ export const useAppStore = defineStore("app", {
     },
     setTheme(theme: keyof ThemeConfig) {
       this.theme = theme;
+    },
+    setLevel(level: number) {
+      this.level = level;
     }
   }
 });
