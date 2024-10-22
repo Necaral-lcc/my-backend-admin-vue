@@ -42,7 +42,7 @@ router.beforeEach(async (to, _from) => {
         router.addRoute(addToHomeRouter(homeRouter, result));
         const routesExist = router.getRoutes();
         const routeExists = routesExist.filter(r => r.path === to.path);
-        if (routeExists.length) {
+        if (routeExists.length && to.fullPath !== "/") {
           userStore.addCacheView(routeExists[0]);
         }
         NProgress.done();

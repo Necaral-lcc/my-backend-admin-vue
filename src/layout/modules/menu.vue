@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <div class="logo" title="返回首页" @click="toPage('homeIndex')">
+    <div class="logo" title="返回首页" @click="jumpUrl('/')">
       {{ name }}
     </div>
     <el-menu
@@ -80,6 +80,11 @@ const handleOpen = (key: string) => {
 };
 
 const handleClose = () => {};
+
+const jumpUrl = (url: string) => {
+  router.push(url);
+  $emit("jump");
+};
 
 const toPage = (name: string) => {
   // router.push({ name });
