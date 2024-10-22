@@ -4,7 +4,7 @@ import { stringify } from "qs";
 import NProgress from "nprogress";
 import { getToken, removeToken, setToken } from "@/utils/auth";
 import { useRouter, useRoute } from "vue-router";
-import { vRequestParameters } from "./type";
+import type { vRequestParameters } from "./type";
 
 const config: AxiosRequestConfig = {
   timeout: 1000 * 10,
