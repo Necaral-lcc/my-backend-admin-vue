@@ -1,3 +1,9 @@
+import { apiAdmin } from "./api";
+
+export const userLogin = <T>(data: vUserLoginData) => {
+  return apiAdmin.post<vResponseData<T>>("/login", data);
+};
+
 export const getRoute = (num: number) =>
   new Promise(resolve => {
     setTimeout(() => {
