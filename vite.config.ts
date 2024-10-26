@@ -24,7 +24,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       proxy: {
         [VITE_REQUEST_API]: {
           target: VITE_APP_URL,
-          changeOrigin: true
+          changeOrigin: true,
+          rewrite: path => path.replace(new RegExp(`^${VITE_REQUEST_API}`), "")
         },
         [VITE_REQUEST_API_2]: {
           target: VITE_APP_URL,

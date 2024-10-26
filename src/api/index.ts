@@ -1,7 +1,13 @@
 import { apiAdmin } from "./api";
+import { URL } from "./url";
 
-export const userLogin = <T>(data: vUserLoginData) => {
-  return apiAdmin.post<vResponseData<T>>("/login", data);
+const VITE_REQUEST_API = import.meta.env.VITE_REQUEST_API;
+
+export const login = <T>(data: vUserLoginData) => {
+  return apiAdmin.post<vResponseData<T>>(
+    VITE_REQUEST_API + URL.login.url,
+    data
+  );
 };
 
 export const getRoute = (num: number) =>
@@ -10,11 +16,3 @@ export const getRoute = (num: number) =>
       resolve(`Route ${num}`);
     }, 300);
   });
-
-export const login = (num: number) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(num);
-    }, 1000 * num);
-  });
-};

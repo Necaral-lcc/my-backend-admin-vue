@@ -3,6 +3,7 @@ import { getRoute } from "@/api";
 import { convertRouters } from "@/utils/route";
 import { privateRoutesRes } from "@/router/list";
 import type { RouteRecordNormalized, RouteRecordRaw } from "vue-router";
+import { removeToken } from "@/utils/auth";
 
 const userInfo_default: vUserInfo = {
   id: 0,
@@ -49,6 +50,12 @@ export const useUserStore = defineStore("user", {
     },
     logout() {
       this.isLogin = false;
+      this.userInfo = userInfo_default;
+      this.jwt = "";
+      this.routers = routers_default;
+      this.permission = permission_default;
+      removeToken();
+      this.clearCacheViews();
     },
     setJwt(jwt: string) {
       this.jwt = jwt;

@@ -76,7 +76,9 @@ class ApiAdmin {
           });
           return Promise.reject("Unauthorized");
         } else if (status === 200 || data.code === 200) {
-          const token = response.headers["token"] as string;
+          const token = response.headers[
+            import.meta.env.VITE_APP_TOKEN_KEY
+          ] as string;
           if (token) {
             setToken(token);
           }

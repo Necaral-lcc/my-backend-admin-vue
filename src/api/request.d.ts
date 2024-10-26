@@ -1,10 +1,10 @@
 interface vResponseData<T = any> {
   code: number;
-  message: string;
+  msg: string;
   data?: T;
 }
 
 interface vUserLoginData {
-  email: string;
+  username: string;
   password: string;
 }
