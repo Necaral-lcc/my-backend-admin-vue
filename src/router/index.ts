@@ -84,7 +84,4 @@ router.afterEach((to, from, failure) => {
   }
 });
 
-
-
-
 export default router;

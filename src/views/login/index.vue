@@ -73,16 +73,16 @@ const submit = async (formEl: FormInstance | undefined) => {
 
 <style lang="scss" scoped>
 .login {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
 
   .login-right {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
   }
 }
 </style>
