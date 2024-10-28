@@ -39,14 +39,6 @@ interface vCacheView {
 }
 
 /**
- * @description: vRouteType type
- * @ page 页面路由
- * @ iframe 内嵌页面路由
- * @ link 链接路由
- */
-type vRouteType = "folder" | "page" | "iframe" | "link";
-
-/**
  * @description: vRoute interface
  * @id number 路由id
  * @name string 路由名称
@@ -65,10 +57,12 @@ interface vRoute {
   title: string;
   path: string;
   component?: string;
-  type: vRouteType;
+  type: vMenuType;
   redirect?: string;
   keepAlive: boolean;
   needLogin: boolean;
   children?: vRoute[];
   link?: string;
 }
+
+type vMenuType = 0 | 1 | 2 | 3;

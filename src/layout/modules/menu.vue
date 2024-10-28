@@ -12,7 +12,7 @@
     >
       <template v-for="item in routes">
         <el-sub-menu
-          v-if="item.type === 'folder'"
+          v-if="item.type === 0"
           :key="item.id"
           :index="item.name"
           :title="item.title"
@@ -104,8 +104,9 @@ const toPage = (name: string) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 64px;
+    height: 60px;
     font-size: var(--custom-font-size-title);
+    border-bottom: 1px solid var(--custom-border-color);
     font-weight: bold;
     cursor: pointer;
   }

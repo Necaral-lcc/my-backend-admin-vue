@@ -120,6 +120,7 @@ $header-height: 50px;
     position: relative;
     grid-area: content;
     background-color: var(--custom-content-background-color);
+    padding: 12px;
   }
 }
 </style>

@@ -2,5 +2,13 @@
   "home":{
     "title":"home",
     "description":"This is the home page"
+  },
+  "button":{
+    "submit":"submit",
+    "search":"search",
+    "reset":"reset",
+    "add":"add",
+    "edit":"edit",
+    "delete":"delete"
   }
 }

@@ -1,3 +1,14 @@
 .menu-drawer {
   --el-drawer-padding-primary: 0;
 }
+
+
+.el-pagination {
+  justify-content: flex-end;
+}
+
+.el-row {
+  .el-col {
+    margin-bottom: 10px;
+  }
+}

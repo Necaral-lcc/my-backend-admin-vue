@@ -17,7 +17,7 @@
       </el-breadcrumb>
     </div>
     <div>
-      <el-button type="text" @click="logout">退出登录</el-button>
+      <el-button text @click="logout">退出登录</el-button>
       <el-switch
         v-model="appStore.i18n"
         active-value="zh"
@@ -81,7 +81,7 @@ const logout = () => {
   justify-content: space-between;
   height: 60px;
   padding: 0 10px;
-  border: 1px solid var(--custom-border-color);
+  border-bottom: 1px solid var(--custom-border-color);
 
   > div {
     display: flex;

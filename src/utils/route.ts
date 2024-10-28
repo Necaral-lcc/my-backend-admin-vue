@@ -19,10 +19,10 @@ export const convertRouters = (rs: vRoute[]): RouteRecordRaw[] => {
         },
         children: []
       };
-      if (route.type === "folder") {
+      if (route.type === 0) {
         r.component = Layout;
         r.children = convertR(route.children || []);
-      } else if (route.type === "page") {
+      } else if (route.type === 1) {
         if (typeof route.component === "string" && route.component) {
           const component = route.component;
           let index = modulesKeys.findIndex(ev => ev.includes(component));
@@ -33,7 +33,7 @@ export const convertRouters = (rs: vRoute[]): RouteRecordRaw[] => {
             r.component = modules[modulesKeys[index]];
           }
         }
-      } else if (route.type === "iframe") {
+      } else if (route.type === 2) {
         r.component = Webview;
       } else {
         return rArr;

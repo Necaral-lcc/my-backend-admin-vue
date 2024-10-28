@@ -38,7 +38,7 @@ export const themes: ThemeConfig = {
     contentBackgroundColor: "#F0F2F5",
     contentColor: "#F0F2F5",
     borderColor: "#e0e0e0",
-    borderRadius: "2px",
+    borderRadius: "4px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.15)",
     fontFamily: "Roboto, sans-serif",
     fontSize: "14px",
@@ -59,12 +59,11 @@ export const themes: ThemeConfig = {
     contentBackgroundColor: "#F0F2F5",
     contentColor: "#fff",
     borderColor: "#424242",
-    borderRadius: "2px",
+    borderRadius: "4px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.15)",
     fontFamily: "Roboto, sans-serif",
     fontSize: "14px",
     fontSizeTitle: "18px",
-
     fontWeight: "400",
     lineHeight: "1.5",
     letterSpacing: "0.01em"

@@ -93,7 +93,7 @@ export const privateRoutesRes: vRoute[] = [
     name: "dashboard",
     title: "数据展示",
     component: "",
-    type: "folder",
+    type: 0,
     keepAlive: false,
     needLogin: true,
     children: [
@@ -103,7 +103,7 @@ export const privateRoutesRes: vRoute[] = [
         name: "dashboardTotal",
         title: "数据统计",
         component: "dashboard/total",
-        type: "page",
+        type: 1,
         keepAlive: false,
         needLogin: true
       },
@@ -113,7 +113,7 @@ export const privateRoutesRes: vRoute[] = [
         name: "dashboardDash",
         title: "数据可视化",
         component: "dashboard/dash",
-        type: "page",
+        type: 1,
         keepAlive: false,
         needLogin: true
       }
@@ -124,7 +124,7 @@ export const privateRoutesRes: vRoute[] = [
     path: "/system",
     name: "system",
     title: "系统管理",
-    type: "folder",
+    type: 0,
     redirect: "/system/admin",
     keepAlive: false,
     needLogin: true,
@@ -135,7 +135,7 @@ export const privateRoutesRes: vRoute[] = [
         name: "systemAdmin",
         title: "后台人员管理",
         component: "system/admin",
-        type: "page",
+        type: 1,
         keepAlive: true,
         needLogin: true
       },
@@ -145,7 +145,7 @@ export const privateRoutesRes: vRoute[] = [
         name: "systemDept",
         title: "部门管理",
         component: "system/dept",
-        type: "page",
+        type: 1,
         keepAlive: true,
         needLogin: true
       },
@@ -155,7 +155,7 @@ export const privateRoutesRes: vRoute[] = [
         name: "systemMenu",
         title: "权限管理",
         component: "system/menu",
-        type: "page",
+        type: 1,
         keepAlive: true,
         needLogin: true
       },
@@ -165,7 +165,7 @@ export const privateRoutesRes: vRoute[] = [
         name: "systemRole",
         title: "角色管理",
         component: "system/role",
-        type: "page",
+        type: 1,
         keepAlive: true,
         needLogin: true
       }
