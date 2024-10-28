@@ -64,5 +64,8 @@ interface vRoute {
   children?: vRoute[];
   link?: string;
 }
-
-type vMenuType = 0 | 1 | 2 | 3;
+/**
+ * @description: vMenuType 路由类型
+ * @enum 0 目录 1 菜单 2 按钮 3 外链 4 按钮
+ */
+type vMenuType = 0 | 1 | 2 | 3 | 4;

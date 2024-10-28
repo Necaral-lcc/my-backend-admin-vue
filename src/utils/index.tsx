@@ -19,14 +19,14 @@ export function menuArrToTree(arr: vMenuTree[]): vMenuTreeObj[] {
     children: []
   };
 
-  const map = (ar: vMenuTree[], parentId: number) => {
+  const map = (ar: vMenuTree[], parentId: number | null) => {
     return ar
       .filter(item => item.parentId === parentId)
       .map(item => {
         const obj: vMenuTreeObj = {
           value: item.id,
-          label: item.name,
-          children: []
+          label: item.title,
+          children: map(arr, item.id)
         };
         return obj;
       });

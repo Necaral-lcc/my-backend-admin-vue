@@ -8,6 +8,8 @@
     "search":"search",
     "reset":"reset",
     "add":"add",
+    "addRootMenu":"addRootMenu",
+    "addSubMenu":"addSubMenu",
     "edit":"edit",
     "delete":"delete"
   }

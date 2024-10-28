@@ -1,6 +1,6 @@
 interface vMenuTree {
   id: number;
-  name: string;
+  title: string;
   parentId: number;
 }
 
