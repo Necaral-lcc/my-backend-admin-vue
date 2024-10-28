@@ -106,9 +106,9 @@ const toPage = (name: string) => {
     justify-content: center;
     height: 60px;
     font-size: var(--custom-font-size-title);
-    border-bottom: 1px solid var(--custom-border-color);
     font-weight: bold;
     cursor: pointer;
+    border-bottom: 1px solid var(--custom-border-color);
   }
 }
 </style>

@@ -1,7 +1,5 @@
 /* 自定义全局 CssVar */
 :root {
-
-
   /* switch关闭状态下的color 需要时可取用 */
   --custom-switch-off-color: #a6a6a6;
 }
@@ -19,7 +17,6 @@
 html {
   color: var(--custom-text-color);
 }
-
 
 .container {
   width: 100%;
