@@ -66,6 +66,12 @@ export const useUserStore = defineStore("user", {
     setPermission(permission: vUserPermission[]) {
       this.permission = permission;
     },
+    hasPermission(permission: string[]) {
+      if (this.permission.includes("*:*:*")) {
+        return true;
+      }
+      return this.permission.some(item => permission.includes(item));
+    },
     reset() {
       this.userInfo = userInfo_default;
       this.jwt = "";

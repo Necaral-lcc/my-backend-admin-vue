@@ -4,6 +4,7 @@ import App from "./App.vue";
 import { store } from "@/store";
 import { init } from "@/init";
 import router from "@/router";
+import setDirective from "./directive";
 
 import "./style/reset.scss";
 // 导入公共样式
@@ -25,4 +26,4 @@ router
     console.log("路由未准备就绪", err);
   });
 
-app.use(init).use(store).mount("#app");
+app.use(init).use(setDirective).use(store).mount("#app");

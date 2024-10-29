@@ -11,6 +11,10 @@
     "addRootMenu":"addRootMenu",
     "addSubMenu":"addSubMenu",
     "edit":"edit",
-    "delete":"delete"
+    "delete":"delete",
+    "addBtn":"addBtn",
+    "editBtn":"editBtn",
+    "deleteBtn":"deleteBtn",
+    "saveBtn":"saveBtn"
   }
 }

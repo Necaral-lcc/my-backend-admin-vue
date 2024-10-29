@@ -24,9 +24,10 @@
     </el-form>
     <el-table :data="tableData.list" border default-expand-all row-key="id">
       <el-table-column label="ID" prop="id" align="center" />
-      <el-table-column label="路由名称" prop="name" align="center" />
-      <el-table-column label="路由标题" prop="title" align="center" />
+      <el-table-column label="名称" prop="name" align="center" />
+      <el-table-column label="标题" prop="title" align="center" />
       <el-table-column label="路径" prop="path" align="center" />
+      <el-table-column label="权限" prop="permission" align="center" />
       <el-table-column label="类型" prop="type" align="center">
         <template #default="scope">
           <el-tag
@@ -44,24 +45,36 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createdAt" align="center">
-        <template #default="scope">{{
-          utcToLocalTime(scope.row.createdAt)
-        }}</template>
+        <template #default="scope">
+          <div v-local-time="scope.row.createdAt">
+            {{ scope.row.createdAt }}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="更新时间" prop="updatedAt" align="center">
-        <template #default="scope">{{
-          utcToLocalTime(scope.row.updatedAt)
-        }}</template>
+        <template #default="scope">
+          <div v-local-time="scope.row.updatedAt">
+            {{ scope.row.updatedAt }}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
-          <el-button
-            v-if="scope.row.type === 0"
-            type="primary"
-            @click="handleAddSubMenu(scope.row.id)"
-            >{{ t("button.addSubMenu") }}</el-button
-          >
+          <div class="table-actions">
+            <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
+            <el-button
+              v-if="scope.row.type === 0"
+              type="primary"
+              @click="handleAddSubMenu(scope.row.id)"
+              >{{ t("button.addSubMenu") }}</el-button
+            >
+            <el-button
+              v-if="scope.row.type !== 4"
+              type="primary"
+              @click="handleAddSubBtn(scope.row.id)"
+              >{{ t("button.addBtn") }}</el-button
+            >
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -105,20 +118,21 @@
             }"
           />
         </el-form-item>
-
-        <el-form-item label="路由名称" prop="name" required>
-          <el-input v-model="dialogForm.data.name" />
-        </el-form-item>
-        <el-form-item label="路由标题" prop="title">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="dialogForm.data.title" />
         </el-form-item>
-        <el-form-item label="路由路径" prop="path" required>
+        <el-form-item label="名称" prop="name" required>
+          <el-input v-model="dialogForm.data.name" />
+        </el-form-item>
+        <el-form-item label="路径" prop="path">
           <el-input v-model="dialogForm.data.path" />
         </el-form-item>
-        <el-form-item label="路由组件" prop="component">
+        <el-form-item label="组件" prop="component">
           <el-input v-model.trim="dialogForm.data.component" />
         </el-form-item>
-
+        <el-form-item label="权限" prop="permission">
+          <el-input v-model.trim="dialogForm.data.permission" />
+        </el-form-item>
         <el-form-item label="重定向" prop="redirect">
           <el-input v-model.trim="dialogForm.data.redirect" />
         </el-form-item>
@@ -160,7 +174,6 @@ import {
 } from "element-plus";
 import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { utcToLocalTime } from "@/utils/date";
 import {
   getMenus,
   getMenuTree,
@@ -207,17 +220,18 @@ const dialogForm = reactive<vDialogForm<vMenu>>({
     keepAlive: false,
     needLogin: true,
     parentId: 0,
+    permission: "",
     link: ""
   },
   title: "编辑管理员",
   type: "add",
   rules: {
     name: [
-      { required: true, message: "请输入路由名称", trigger: "blur" },
+      { required: true, message: "请输入名称", trigger: "blur" },
       { min: 3, max: 16, message: "长度在 2 到 20 个字符", trigger: "blur" },
       {
         pattern: /^[a-zA-Z0-9]+$/,
-        message: "路由名称只能包含字母和数字",
+        message: "名称只能包含字母和数字",
         trigger: "blur"
       }
     ]
@@ -291,6 +305,25 @@ const handleAddSubMenu = (parentId: number) => {
     link: ""
   };
 };
+const handleAddSubBtn = (parentId: number) => {
+  dialogForm.type = "add";
+  getMenuTreeList();
+  dialogForm.visible = true;
+  dialogForm.title = "新增按钮";
+  dialogForm.data = {
+    name: "",
+    title: "",
+    path: "",
+    component: "",
+    status: true,
+    type: 4,
+    redirect: "",
+    keepAlive: false,
+    needLogin: true,
+    parentId,
+    link: ""
+  };
+};
 
 const handlePageChange = (page: number) => {
   queryForm.page = page;
@@ -310,8 +343,15 @@ const handleEdit = async (id: number) => {
 };
 
 const handleSubmit = async () => {
+  const data = JSON.parse(JSON.stringify(dialogForm.data));
+  if (Array.isArray(data.parentId)) {
+    data.parentId = data.parentId[data.parentId.length - 1];
+  }
   if (dialogForm.type === "edit") {
-    const res = await updateMenu(dialogForm.data);
+    if (!data.id) {
+      return;
+    }
+    const res = await updateMenu(data);
     if (res.code === 200) {
       dialogForm.visible = false;
       ElMessage.success("修改成功");
@@ -320,7 +360,7 @@ const handleSubmit = async () => {
       ElMessage.error(res.msg);
     }
   } else if (dialogForm.type === "add") {
-    const res = await createMenu(dialogForm.data);
+    const res = await createMenu(data);
     if (res.code === 200) {
       dialogForm.visible = false;
       ElMessage.success("新增成功");

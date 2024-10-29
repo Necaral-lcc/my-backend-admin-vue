@@ -4,6 +4,7 @@ export type vMenu = Omit<vRoute, "id" | "children"> & {
   parentId: number;
   status: boolean;
   readonly id?: number;
+  permission?: string;
 };
 
 export const getMenus = <T>(data: vPageParams) => {

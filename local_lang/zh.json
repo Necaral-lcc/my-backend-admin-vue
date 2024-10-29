@@ -11,6 +11,10 @@
     "addRootMenu":"添加一级菜单",
     "addSubMenu":"添加子菜单",
     "edit":"编辑",
-    "delete":"删除"
+    "delete":"删除",
+    "addBtn":"新增按钮",
+    "editBtn":"编辑按钮",
+    "deleteBtn":"删除按钮",
+    "saveBtn":"保存按钮"
   }
 }
