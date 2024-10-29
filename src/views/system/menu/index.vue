@@ -7,6 +7,19 @@
             t("button.addRootMenu")
           }}</el-button>
         </el-col>
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-form-item label="权限名">
+            <el-input v-model="queryForm.name" placeholder="请输入权限名" />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-form-item>
+            <el-button type="primary" @click="handleQuery">{{
+              t("button.submit")
+            }}</el-button>
+            <el-button @click="handleReset">{{ t("button.reset") }}</el-button>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <el-table :data="tableData.list" border default-expand-all row-key="id">
@@ -168,7 +181,8 @@ defineOptions({
 
 const queryForm = reactive({
   page: 1,
-  pageSize: 10
+  pageSize: 10,
+  name: ""
 });
 
 const menuTree = ref<vMenuTreeObj[]>([]);
@@ -180,7 +194,7 @@ const tableData = reactive<vListResponse<any>>({
   pageSize: 10
 });
 
-const dialogForm = reactive<vDialogForm<vMenu> & { type: string }>({
+const dialogForm = reactive<vDialogForm<vMenu>>({
   visible: false,
   data: {
     name: "",
@@ -315,5 +329,16 @@ const handleSubmit = async () => {
       ElMessage.error(res.msg);
     }
   }
+};
+
+const handleQuery = () => {
+  queryForm.page = 1;
+  getList();
+};
+
+const handleReset = () => {
+  queryForm.name = "";
+  queryForm.page = 1;
+  getList();
 };
 </script>

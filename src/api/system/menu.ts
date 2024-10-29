@@ -29,5 +29,5 @@ export const createMenu = <T>(data: vMenu) => {
   );
 };
 export const getMenuTree = <T>() => {
-  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menuTree");
+  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu/options");
 };

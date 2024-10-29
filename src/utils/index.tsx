@@ -19,20 +19,19 @@ export function menuArrToTree(arr: vMenuTree[]): vMenuTreeObj[] {
     children: []
   };
 
-  const map = (ar: vMenuTree[], parentId: number | null) => {
-    return ar
-      .filter(item => item.parentId === parentId)
-      .map(item => {
-        const obj: vMenuTreeObj = {
-          value: item.id,
-          label: item.title,
-          children: map(arr, item.id)
-        };
-        return obj;
-      });
-  };
-
-  root.children = map(arr, 0);
+  root.children = mapMenuTree(arr, 0);
 
   return [root];
 }
+export const mapMenuTree = (ar: vMenuTree[], parentId: number) => {
+  return ar
+    .filter(item => item.parentId === parentId)
+    .map(item => {
+      const obj: vMenuTreeObj = {
+        value: item.id,
+        label: item.title,
+        children: mapMenuTree(ar, item.id)
+      };
+      return obj;
+    });
+};

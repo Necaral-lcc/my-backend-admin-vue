@@ -1,10 +1,12 @@
 import axios from "axios";
 import type { AxiosRequestConfig, CustomParamsSerializer } from "axios";
+import { AxiosError } from "axios";
 import { stringify } from "qs";
 import NProgress from "nprogress";
 import { getToken, removeToken, setToken } from "@/utils/auth";
-import { useRouter, useRoute } from "vue-router";
 import type { vRequestParameters } from "./type";
+import router from "@/router";
+import { ElMessage } from "element-plus";
 
 const config: AxiosRequestConfig = {
   timeout: 1000 * 10,
@@ -29,6 +31,7 @@ class ApiAdmin {
     if (limit) {
       ApiAdmin.limit = limit;
     }
+
     this.initAxiosRequest();
     this.initAxiosResponse();
   }
@@ -67,15 +70,16 @@ class ApiAdmin {
         NProgress.done();
         const { data, status } = response;
         if (status === 401 || data.code === 401) {
-          const router = useRouter();
-          const route = useRoute();
           removeToken();
+          ElMessage.error("登录过期，请重新登录");
           router.push({
             path: "/login",
-            query: { redirect: encodeURIComponent(route.fullPath) }
+            query: {
+              redirect: encodeURIComponent(router.currentRoute.value.fullPath)
+            }
           });
           return Promise.reject("Unauthorized");
-        } else if (status === 200 || data.code === 200) {
+        } else if (status === 200 && data.code === 200) {
           const token = response.headers[
             import.meta.env.VITE_APP_TOKEN_KEY
           ] as string;
@@ -110,12 +114,22 @@ class ApiAdmin {
         ApiAdmin.tokenPools.set(url, cancel);
       })
     };
-    const result = await ApiAdmin.axiosInstance.request<T>(config);
-    ApiAdmin.pools.delete(url);
-    if (result.status === 200) {
-      return result.data;
-    } else {
-      return Promise.reject(result.data);
+    try {
+      const result = await ApiAdmin.axiosInstance.request<T>(config);
+      ApiAdmin.pools.delete(url);
+      if (result.status === 200) {
+        return result.data;
+      } else if (result.status === 401) {
+        return Promise.reject("Unauthorized");
+      } else {
+        return Promise.reject(result.data);
+      }
+    } catch (e: unknown) {
+      if (e instanceof AxiosError) {
+        if (e.status === 401) {
+        }
+      }
+      return Promise.reject(e);
     }
   }
 

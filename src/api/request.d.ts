@@ -4,6 +4,11 @@ interface vResponseData<T = any> {
   data: T;
 }
 
+interface vTime {
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface vUserLoginData {
   username: string;
   password: string;
@@ -34,10 +39,12 @@ interface vListResponse<T = any> extends vPageParams {
 interface vAdminUser {
   id: number;
   name: string;
-  nickname: string | null;
-  email: string | null;
-  roleId: number | null;
-  deptId: number | null;
-  createdAt: string;
-  updatedAt: string;
+  nickname: string;
+  password: string;
+  email: string;
+  roleId: number;
+  deptId: number;
+  status: boolean;
 }
+
+type vAdminUserForm = Partial<vAdminUser>;

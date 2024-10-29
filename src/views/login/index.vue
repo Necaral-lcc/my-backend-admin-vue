@@ -31,10 +31,11 @@ import {
   ElMessage
 } from "element-plus";
 import { login } from "@/api";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { reactive, ref } from "vue";
 
 const router = useRouter();
+const route = useRoute();
 
 const formRef = ref<FormInstance>();
 const form = reactive({
@@ -64,7 +65,13 @@ const submit = async (formEl: FormInstance | undefined) => {
 
   const res = await login(form);
   if (res.code == 200) {
-    router.push("/");
+    if (route.query.redirect) {
+      ElMessage.success("登录成功,跳转至先前页面");
+      router.push(decodeURIComponent(route.query.redirect as string));
+    } else {
+      ElMessage.success("登录成功,跳转至首页");
+      router.push("/");
+    }
   } else {
     ElMessage.error(res.msg);
   }

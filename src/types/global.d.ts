@@ -9,3 +9,8 @@ interface vMenuTreeObj {
   label: string;
   children?: vMenuTreeObj[];
 }
+
+interface vOption {
+  id: number;
+  name: string;
+}

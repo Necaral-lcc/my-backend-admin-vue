@@ -5,4 +5,5 @@ export interface vDialogForm<T> {
   title: string;
   data: T;
   rules: FormRules<T>;
+  type: string;
 }

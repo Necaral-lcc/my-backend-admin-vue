@@ -9,20 +9,12 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <el-form-item label="用户名">
-            <el-input
-              v-model="queryForm.name"
-              placeholder="请输入用户名"
-              label="用户名"
-            />
+            <el-input v-model="queryForm.name" placeholder="请输入用户名" />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <el-form-item label="邮箱号">
-            <el-input
-              v-model="queryForm.email"
-              placeholder="请输入用户名"
-              label="用户名"
-            />
+            <el-input v-model="queryForm.email" placeholder="请输入邮箱号" />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
@@ -30,7 +22,7 @@
             <el-button type="primary" @click="handleQuery">{{
               t("button.submit")
             }}</el-button>
-            <el-button>{{ t("button.reset") }}</el-button>
+            <el-button @click="handleReset">{{ t("button.reset") }}</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -85,15 +77,34 @@
         <el-form-item label="邮箱号" prop="email" required>
           <el-input v-model="dialogForm.data.email" />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item
+          label="密码"
+          prop="password"
+          :required="dialogForm.type === 'add'"
+        >
           <el-input
             v-model.trim="dialogForm.data.password"
             type="password"
             autocomplete="new-password"
           />
         </el-form-item>
+        <el-form-item label="角色" prop="roleId">
+          <el-select v-model="dialogForm.data.roleId" placeholder="请选择角色">
+            <el-option
+              v-for="item in dialogForm.roleList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-switch v-model="dialogForm.data.status" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSubmit">{{
+            t("button.submit")
+          }}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -112,16 +123,24 @@ import {
   ElCol,
   ElPagination,
   ElDialog,
-  ElSwitch
+  ElSwitch,
+  ElSelect,
+  ElOption,
+  ElMessage
 } from "element-plus";
 import type { FormInstance } from "element-plus";
 import { reactive, ref, onMounted } from "vue";
 import styles from "./index.module.scss";
 import { useI18n } from "vue-i18n";
-import { getAdminUsers } from "@/api/system/admin";
+import {
+  createAdminUser,
+  getAdminUser,
+  getAdminUsers,
+  updateAdminUser
+} from "@/api/system/admin";
 import { utcToLocalTime } from "@/utils/date";
-import type { vDialogFormData } from "./type";
 import type { vDialogForm } from "@/types/module";
+import { getRoleOptions } from "@/api/system/role";
 
 defineOptions({
   name: "systemAdmin"
@@ -136,25 +155,29 @@ const queryForm = reactive({
   pageSize: 10
 });
 
-const tableData = reactive<vListResponse<vAdminUser>>({
+const tableData = reactive<vListResponse<vAdminUser & vTime>>({
   list: [],
   total: 0,
   page: 1,
   pageSize: 10
 });
 
-const dialogForm = reactive<vDialogForm<vDialogFormData>>({
+const dialogForm = reactive<
+  vDialogForm<vAdminUserForm> & {
+    roleList: vOption[];
+  }
+>({
   visible: false,
   data: {
     name: "",
     nickname: "",
     email: "",
     password: "",
-    status: true,
-    roleId: null,
-    deptId: null
+    status: true
   },
   title: "编辑管理员",
+  roleList: [],
+  type: "add",
   rules: {
     name: [
       { required: true, message: "请输入用户名", trigger: "blur" },
@@ -181,9 +204,7 @@ onMounted(() => {
 });
 
 const getList = async () => {
-  const res = await getAdminUsers<vAdminUser>(queryForm);
-  console.log(res);
-
+  const res = await getAdminUsers<vAdminUser & vTime>(queryForm);
   if (res.code === 200) {
     tableData.list = res.data?.list || [];
     tableData.total = res.data?.total || 0;
@@ -193,11 +214,22 @@ const getList = async () => {
   }
 };
 
+const getRoleList = async () => {
+  const res = await getRoleOptions();
+  if (res.code === 200) {
+    dialogForm.roleList = res.data;
+  } else {
+    dialogForm.roleList = [];
+  }
+};
+
 const handleQuery = async () => {
   getList();
 };
 
 const handleAdd = () => {
+  dialogForm.type = "add";
+  getRoleList();
   dialogForm.visible = true;
   dialogForm.title = "新增管理员";
   resetDialogForm();
@@ -208,9 +240,7 @@ const resetDialogForm = () => {
     nickname: "",
     email: "",
     password: "",
-    status: true,
-    roleId: null,
-    deptId: null
+    status: true
   };
 };
 
@@ -219,7 +249,63 @@ const handlePageChange = (page: number) => {
   getList();
 };
 
-const handleEdit = (id: number) => {
-  console.log("handleEdit", id);
+const handleEdit = async (id: number) => {
+  const res = await getAdminUser<Omit<vAdminUser, "password">>(id);
+  if (res.code === 200) {
+    dialogForm.visible = true;
+    dialogForm.type = "edit";
+    dialogForm.title = "编辑管理员";
+    dialogForm.data = res.data;
+    getRoleList();
+  } else {
+    ElMessage.error(res.msg);
+  }
+};
+
+const handleSubmit = async () => {
+  dialogFormRef.value?.validate(async (valid: boolean) => {
+    if (valid) {
+      console.log("submit", dialogForm.data);
+      if (dialogForm.type === "add") {
+        const res = await createAdminUser(dialogForm.data);
+        if (res.code === 200) {
+          dialogForm.visible = false;
+          resetDialogForm();
+          handleQuery();
+          ElMessage.success("新增成功");
+        } else {
+          ElMessage.error(res.msg);
+        }
+      } else if (dialogForm.type === "edit") {
+        if (dialogForm.data.id) {
+          const res = await updateAdminUser(
+            dialogForm.data.id,
+            dialogForm.data
+          );
+          if (res.code === 200) {
+            dialogForm.visible = false;
+            resetDialogForm();
+            handleQuery();
+            ElMessage.success("修改成功");
+          } else {
+            ElMessage.error(res.msg);
+          }
+        }
+      }
+      // TODO: 提交表单
+    } else {
+      console.log("error submit", dialogForm.data);
+    }
+  });
+};
+
+const handleReset = () => {
+  queryForm.name = "";
+  queryForm.email = "";
+  queryForm.page = 1;
+  queryForm.pageSize = 10;
+  dialogForm.visible = false;
+  resetDialogForm();
+  getList();
 };
 </script>
