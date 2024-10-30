@@ -51,3 +51,21 @@ export const addToHomeRouter = (
   ...router,
   children: [...(router.children || []), ...routes]
 });
+
+export const listToTree = <T extends vSetList>(
+  ar: T[],
+  parentId: number
+): Array<T & { children: T[] }> => {
+  return ar
+    .filter(item => item.parentId === parentId)
+    .map(item => {
+      const obj: T & {
+        children: T[];
+      } = {
+        ...item,
+        parentId: item.parentId || 0,
+        children: listToTree(ar, item.id)
+      };
+      return obj;
+    });
+};

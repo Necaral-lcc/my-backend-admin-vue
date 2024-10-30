@@ -1,3 +1,5 @@
+import type { vMenu } from "@/api/system/menu";
+
 export const pageTypeList = [
   {
     key: 0,
@@ -20,3 +22,19 @@ export const pageTypeList = [
     name: "按钮"
   }
 ];
+
+export const dialogFormData_default: vMenu = {
+  name: "",
+  title: "",
+  path: "",
+  icon: "",
+  component: "",
+  status: true,
+  type: 0,
+  redirect: "",
+  keepAlive: false,
+  needLogin: true,
+  parentId: 0,
+  permission: "",
+  link: ""
+};

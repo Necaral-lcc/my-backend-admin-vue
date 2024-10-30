@@ -15,7 +15,6 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   NProgress.start();
   const userStore = useUserStore();
-  // console.log("beforeEach", to, _from, "isLogin:", userStore.getLoginState);
   if (to.meta.title && typeof to.meta.title === "string") {
     document.title = to.meta.title as string;
   }
@@ -35,7 +34,7 @@ router.beforeEach(async (to, _from) => {
       }
       NProgress.done();
     } else {
-      const result = await userStore.getRoutes();
+      const result = await userStore.getUser();
       if (Array.isArray(result) && result.length > 0) {
         userStore.login();
         router.removeRoute("home");

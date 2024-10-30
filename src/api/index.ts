@@ -11,3 +11,7 @@ export const getRoute = (num: number) =>
       resolve(`Route ${num}`);
     }, 300);
   });
+
+export const getUserInfo = <T>() => {
+  return apiAdmin.get<vResponseData<T>>("/admin-api/userInfo");
+};

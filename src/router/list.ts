@@ -86,7 +86,7 @@ export const privateRoutes: RouteRecordRaw = {
   ]
 };
 
-export const privateRoutesRes: vRoute[] = [
+/* export const privateRoutesRes: vRoute[] = [
   {
     id: 1,
     path: "/dashboard",
@@ -172,3 +172,4 @@ export const privateRoutesRes: vRoute[] = [
     ]
   }
 ];
+ */

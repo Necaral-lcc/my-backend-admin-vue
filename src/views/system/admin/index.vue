@@ -3,9 +3,12 @@
     <el-form :model="queryForm">
       <el-row :gutter="24">
         <el-col :span="24">
-          <el-button type="primary" @click="handleAdd">{{
-            t("button.add")
-          }}</el-button>
+          <el-button
+            v-permission="['system:admin:add']"
+            type="primary"
+            @click="handleAdd"
+            >{{ t("button.add") }}</el-button
+          >
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <el-form-item label="用户名">
@@ -45,7 +48,20 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
+          <el-button
+            v-permission="['system:admin:edit']"
+            text
+            @click="handleEdit(scope.row.id)"
+            >编辑</el-button
+          >
+          <el-button
+            v-if="scope.row.id !== 1"
+            v-permission="['system:admin:del']"
+            type="danger"
+            text
+            @click="handleDelete(scope.row.id)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -265,7 +281,6 @@ const handleEdit = async (id: number) => {
 const handleSubmit = async () => {
   dialogFormRef.value?.validate(async (valid: boolean) => {
     if (valid) {
-      console.log("submit", dialogForm.data);
       if (dialogForm.type === "add") {
         const res = await createAdminUser(dialogForm.data);
         if (res.code === 200) {
@@ -307,5 +322,9 @@ const handleReset = () => {
   dialogForm.visible = false;
   resetDialogForm();
   getList();
+};
+
+const handleDelete = async (id: number) => {
+  console.log(id);
 };
 </script>
