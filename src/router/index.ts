@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { publicRoutes, homeRouter } from "./public";
+import { publicRoutes, homeRouter, homeRouterName } from "./public";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { isLogin, removeToken } from "@/utils/auth";
@@ -37,7 +37,7 @@ router.beforeEach(async (to, _from) => {
       const result = await userStore.getUser();
       if (Array.isArray(result) && result.length > 0) {
         userStore.login();
-        router.removeRoute("home");
+        router.removeRoute(homeRouterName);
         router.addRoute(addToHomeRouter(homeRouter, result));
         const routesExist = router.getRoutes();
         const routeExists = routesExist.filter(r => r.path === to.path);

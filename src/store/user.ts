@@ -3,6 +3,8 @@ import { getUserInfo } from "@/api";
 import { convertRouters } from "@/utils/route";
 import type { RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 import { removeToken } from "@/utils/auth";
+import router from "@/router";
+import { homeRouter, homeRouterName } from "@/router/public";
 
 const userInfo_default: vUserInfo = {
   id: 0,
@@ -52,6 +54,9 @@ export const useUserStore = defineStore("user", {
       this.permission = permission_default;
       removeToken();
       this.clearCacheViews();
+      // 重置首页路由
+      router.removeRoute(homeRouterName);
+      router.addRoute(homeRouter);
     },
     setJwt(jwt: string) {
       this.jwt = jwt;
