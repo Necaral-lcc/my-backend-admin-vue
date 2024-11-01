@@ -3,7 +3,6 @@ import { getUserInfo } from "@/api";
 import { convertRouters } from "@/utils/route";
 import type { RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 import { removeToken } from "@/utils/auth";
-import { listToTree } from "@/utils/route";
 
 const userInfo_default: vUserInfo = {
   id: 0,
@@ -91,7 +90,7 @@ export const useUserStore = defineStore("user", {
     async getUser(): Promise<RouteRecordRaw[]> {
       const result = await getUserInfo<vUserInfoResponse>();
       if (result.code === 200) {
-        const routes = listToTree<vRoute>(result.data.routes, 0);
+        const routes = result.data.routes;
         this.routers = routes;
         this.permission = result.data.permission;
         return convertRouters(routes);
