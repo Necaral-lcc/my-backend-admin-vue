@@ -68,8 +68,6 @@ const cacheViews = computed<string[]>(() =>
   userStore.cacheViews
     .filter(item => item.meta.keepAlive)
     .map(item => {
-      console.log("cacheViews", item.name);
-
       return item.name as string;
     })
 );

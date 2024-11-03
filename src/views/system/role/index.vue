@@ -3,9 +3,12 @@
     <el-form :model="queryForm">
       <el-row :gutter="24">
         <el-col :span="24">
-          <el-button type="primary" @click="handleAdd">{{
-            t("button.add")
-          }}</el-button>
+          <el-button
+            v-permission="['system:role:add']"
+            type="primary"
+            @click="handleAdd"
+            >{{ t("button.add") }}</el-button
+          >
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <el-form-item label="角色名">
@@ -25,7 +28,6 @@
     <el-table :data="tableData.list" border default-expand-all row-key="id">
       <el-table-column label="ID" prop="id" align="center" />
       <el-table-column label="角色名称" prop="name" align="center" />
-      <el-table-column label="权限" prop="menuIds" align="center" />
       <el-table-column label="创建时间" prop="createdAt" align="center">
         <template #default="scope">{{
           utcToLocalTime(scope.row.createdAt)
@@ -38,7 +40,19 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
+          <el-button
+            v-permission="['system:role:edit']"
+            text
+            @click="handleEdit(scope.row.id)"
+            >{{ t("button.edit") }}</el-button
+          >
+          <el-button
+            v-permission="['system:role:del']"
+            type="danger"
+            text
+            @click="handleDelete(scope.row.id)"
+            >{{ t("button.delete") }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -72,6 +86,7 @@
             show-checkbox
             node-key="value"
             empty-text="无权限"
+            :check-strictly="true"
             @check-change="handleMenuTreeChange"
           />
         </el-form-item>
@@ -194,8 +209,6 @@ const handleAdd = () => {
     menuIds: []
   };
   nextTick(() => {
-    console.log("treeRef", treeRef.value);
-
     treeRef.value?.setCheckedKeys([]);
   });
 };
@@ -265,5 +278,9 @@ const handleReset = () => {
   queryForm.page = 1;
   queryForm.name = "";
   getList();
+};
+
+const handleDelete = async (id: number) => {
+  console.log(id);
 };
 </script>

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { publicRoutes, homeRouter } from "./public";
+import { publicRoutes, homeRouter, homeRouterName } from "./public";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { isLogin, removeToken } from "@/utils/auth";
@@ -15,7 +15,6 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   NProgress.start();
   const userStore = useUserStore();
-  // console.log("beforeEach", to, _from, "isLogin:", userStore.getLoginState);
   if (to.meta.title && typeof to.meta.title === "string") {
     document.title = to.meta.title as string;
   }
@@ -35,10 +34,10 @@ router.beforeEach(async (to, _from) => {
       }
       NProgress.done();
     } else {
-      const result = await userStore.getRoutes();
+      const result = await userStore.getUser();
       if (Array.isArray(result) && result.length > 0) {
         userStore.login();
-        router.removeRoute("home");
+        router.removeRoute(homeRouterName);
         router.addRoute(addToHomeRouter(homeRouter, result));
         const routesExist = router.getRoutes();
         const routeExists = routesExist.filter(r => r.path === to.path);

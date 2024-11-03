@@ -41,13 +41,32 @@ export const convertRouters = (rs: vRoute[]): RouteRecordRaw[] => {
       return [...rArr, r];
     }, []);
   }
-  return convertR(rs);
+  const rArr = convertR(rs);
+  return rArr;
 };
 
 export const addToHomeRouter = (
-  router: RouteRecordRaw,
+  home: RouteRecordRaw,
   routes: RouteRecordRaw[]
 ) => ({
-  ...router,
-  children: [...(router.children || []), ...routes]
+  ...home,
+  children: [...(home.children || []), ...routes]
 });
+
+export const listToTree = <T extends vSetList>(
+  ar: T[],
+  parentId: number
+): Array<T & { children: T[] }> => {
+  return ar
+    .filter(item => item.parentId === parentId)
+    .map(item => {
+      const obj: T & {
+        children: T[];
+      } = {
+        ...item,
+        parentId: item.parentId || 0,
+        children: listToTree(ar, item.id)
+      };
+      return obj;
+    });
+};

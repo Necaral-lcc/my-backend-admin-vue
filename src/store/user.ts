@@ -1,19 +1,17 @@
 import { defineStore } from "pinia";
-import { getRoute } from "@/api";
+import { getUserInfo } from "@/api";
 import { convertRouters } from "@/utils/route";
-import { privateRoutesRes } from "@/router/list";
 import type { RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 import { removeToken } from "@/utils/auth";
+import router from "@/router";
+import { homeRouter, homeRouterName } from "@/router/public";
 
 const userInfo_default: vUserInfo = {
   id: 0,
   name: "",
   email: "",
-  phone: "",
-  avatar: "",
-  role: "",
-  permissions: [],
-  routers: []
+  nickname: "",
+  deptId: null
 };
 
 const routers_default: vRoute[] = [];
@@ -56,6 +54,9 @@ export const useUserStore = defineStore("user", {
       this.permission = permission_default;
       removeToken();
       this.clearCacheViews();
+      // 重置首页路由
+      router.removeRoute(homeRouterName);
+      router.addRoute(homeRouter);
     },
     setJwt(jwt: string) {
       this.jwt = jwt;
@@ -84,7 +85,6 @@ export const useUserStore = defineStore("user", {
         return;
       }
       this.cacheViews.push(view);
-      console.log("add cache view", view.name, this.cacheViews);
     },
     removeCacheView(view: RouteRecordNormalized) {
       this.cacheViews = this.cacheViews.filter(item => item.name !== view.name);
@@ -92,11 +92,13 @@ export const useUserStore = defineStore("user", {
     clearCacheViews() {
       this.cacheViews = [];
     },
-    async getRoutes(): Promise<RouteRecordRaw[]> {
-      const result = await getRoute(300);
-      if (result) {
-        this.routers = privateRoutesRes;
-        return convertRouters(privateRoutesRes);
+    async getUser(): Promise<RouteRecordRaw[]> {
+      const result = await getUserInfo<vUserInfoResponse>();
+      if (result.code === 200) {
+        const routes = result.data.routes;
+        this.routers = routes;
+        this.permission = result.data.permission;
+        return convertRouters(routes);
       } else {
         return [];
       }

@@ -3,9 +3,12 @@
     <el-form :model="queryForm">
       <el-row :gutter="24">
         <el-col :span="24">
-          <el-button type="primary" @click="handleAddRootMenu">{{
-            t("button.addRootMenu")
-          }}</el-button>
+          <el-button
+            v-permission="['system:menu:addMenu']"
+            type="primary"
+            @click="handleAddRootMenu"
+            >{{ t("button.addRootMenu") }}</el-button
+          >
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <el-form-item label="权限名">
@@ -61,31 +64,36 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <div class="table-actions">
-            <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
             <el-button
               v-if="scope.row.type === 0"
+              v-permission="['system:menu:addMenu']"
               type="primary"
               @click="handleAddSubMenu(scope.row.id)"
               >{{ t("button.addSubMenu") }}</el-button
             >
             <el-button
               v-if="scope.row.type !== 4"
+              v-permission="['system:menu:edit']"
               type="primary"
               @click="handleAddSubBtn(scope.row.id)"
               >{{ t("button.addBtn") }}</el-button
             >
+            <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
+            <el-popconfirm
+              title="确认删除？"
+              @confirm="handleDelete(scope.row.id)"
+            >
+              <template #reference>
+                <el-button v-permission="['system:menu:del']" text type="danger"
+                  >删除</el-button
+                >
+              </template>
+            </el-popconfirm>
           </div>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      v-if="tableData.total > queryForm.pageSize"
-      layout="prev, pager, next"
-      :total="tableData.total"
-      :page-size="queryForm.pageSize"
-      :current-page="queryForm.page"
-      @current-change="handlePageChange"
-    />
+
     <el-dialog
       v-if="dialogForm.visible"
       v-model="dialogForm.visible"
@@ -163,14 +171,14 @@ import {
   ElFormItem,
   ElRow,
   ElCol,
-  ElPagination,
   ElDialog,
   ElSwitch,
   ElRadioGroup,
   ElRadioButton,
   ElCascader,
   ElMessage,
-  ElTag
+  ElTag,
+  ElPopconfirm
 } from "element-plus";
 import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -179,12 +187,13 @@ import {
   getMenuTree,
   createMenu,
   getMenu,
-  updateMenu
+  updateMenu,
+  deleteMenu
 } from "@/api/system/menu";
 import type { vDialogForm } from "@/types/module";
 import type { vMenu } from "@/api/system/menu";
 import { menuArrToTree } from "@/utils";
-import { pageTypeList } from "./data";
+import { pageTypeList, dialogFormData_default } from "./data";
 
 const { t } = useI18n();
 
@@ -193,14 +202,12 @@ defineOptions({
 });
 
 const queryForm = reactive({
-  page: 1,
-  pageSize: 10,
   name: ""
 });
 
 const menuTree = ref<vMenuTreeObj[]>([]);
 
-const tableData = reactive<vListResponse<any>>({
+const tableData = reactive<any>({
   list: [],
   total: 0,
   page: 1,
@@ -210,25 +217,14 @@ const tableData = reactive<vListResponse<any>>({
 const dialogForm = reactive<vDialogForm<vMenu>>({
   visible: false,
   data: {
-    name: "",
-    title: "",
-    path: "",
-    component: "",
-    status: true,
-    type: 0,
-    redirect: "",
-    keepAlive: false,
-    needLogin: true,
-    parentId: 0,
-    permission: "",
-    link: ""
+    ...dialogFormData_default
   },
   title: "编辑管理员",
   type: "add",
   rules: {
     name: [
       { required: true, message: "请输入名称", trigger: "blur" },
-      { min: 3, max: 16, message: "长度在 2 到 20 个字符", trigger: "blur" },
+      { min: 3, max: 32, message: "长度在 2 到 20 个字符", trigger: "blur" },
       {
         pattern: /^[a-zA-Z0-9]+$/,
         message: "名称只能包含字母和数字",
@@ -243,12 +239,9 @@ onMounted(() => {
 });
 
 const getList = async () => {
-  const result = await getMenus(queryForm);
+  const result = await getMenus();
   if (result.code === 200) {
-    tableData.list = result.data.list;
-    tableData.total = result.data.total;
-    tableData.page = result.data.page;
-    tableData.pageSize = result.data.pageSize;
+    tableData.list = result.data;
   } else {
     tableData.list = [];
     tableData.total = 0;
@@ -272,17 +265,8 @@ const handleAddRootMenu = () => {
   dialogForm.visible = true;
   dialogForm.title = "新增一级菜单";
   dialogForm.data = {
-    name: "",
-    title: "",
-    path: "",
-    component: "",
-    status: true,
-    type: 0,
-    redirect: "",
-    keepAlive: false,
-    needLogin: true,
-    parentId: 0,
-    link: ""
+    ...dialogFormData_default,
+    type: 0
   };
 };
 
@@ -292,17 +276,9 @@ const handleAddSubMenu = (parentId: number) => {
   dialogForm.visible = true;
   dialogForm.title = "新增二级菜单";
   dialogForm.data = {
-    name: "",
-    title: "",
-    path: "",
-    component: "",
-    status: true,
+    ...dialogFormData_default,
     type: 1,
-    redirect: "",
-    keepAlive: false,
-    needLogin: true,
-    parentId,
-    link: ""
+    parentId
   };
 };
 const handleAddSubBtn = (parentId: number) => {
@@ -311,24 +287,12 @@ const handleAddSubBtn = (parentId: number) => {
   dialogForm.visible = true;
   dialogForm.title = "新增按钮";
   dialogForm.data = {
-    name: "",
-    title: "",
-    path: "",
-    component: "",
-    status: true,
+    ...dialogFormData_default,
     type: 4,
-    redirect: "",
-    keepAlive: false,
-    needLogin: true,
-    parentId,
-    link: ""
+    parentId
   };
 };
 
-const handlePageChange = (page: number) => {
-  queryForm.page = page;
-  getList();
-};
 const handleEdit = async (id: number) => {
   const result = await getMenu<vMenu>(id);
   if (result.code === 200) {
@@ -371,14 +335,22 @@ const handleSubmit = async () => {
   }
 };
 
+const handleDelete = async (id: number) => {
+  const result = await deleteMenu(id);
+  if (result.code === 200) {
+    ElMessage.success("删除成功");
+    getList();
+  } else {
+    ElMessage.error(result.msg);
+  }
+};
+
 const handleQuery = () => {
-  queryForm.page = 1;
   getList();
 };
 
 const handleReset = () => {
   queryForm.name = "";
-  queryForm.page = 1;
   getList();
 };
 </script>

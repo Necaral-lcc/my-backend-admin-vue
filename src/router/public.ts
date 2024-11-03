@@ -1,8 +1,10 @@
 import type { RouteRecordRaw } from "vue-router";
 
+export const homeRouterName = "main";
+
 export const homeRouter: RouteRecordRaw = {
   path: "/",
-  name: "main",
+  name: homeRouterName,
   meta: {
     needLogin: true,
     title: ""

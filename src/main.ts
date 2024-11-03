@@ -19,8 +19,8 @@ app.use(router);
 
 router
   .isReady()
-  .then(res => {
-    console.log("路由准备就绪", res);
+  .then(_ => {
+    console.log("路由准备就绪");
   })
   .catch(err => {
     console.log("路由未准备就绪", err);

@@ -12,12 +12,9 @@
 interface vUserInfo {
   id: number;
   name: string;
+  nickname: string;
   email: string;
-  avatar: string;
-  phone: string;
-  role: string;
-  routers: vRoute[];
-  permissions: vUserPermission[];
+  deptId: number | null;
 }
 
 type vUserPermission = `${string}:${string}:${string}`;
@@ -52,20 +49,29 @@ interface vCacheView {
  * @children vRoute[] 子路由
  */
 interface vRoute {
-  readonly id: number;
+  id: number;
   name: string;
-  title: string;
   path: string;
+  title: string;
+  icon: string;
   component?: string;
-  type: vMenuType;
-  redirect?: string;
+  redirect?: string | null;
+  type: number;
+  link: string | null;
+  parentId: number;
+  permission: string | null;
   keepAlive: boolean;
   needLogin: boolean;
-  children?: vRoute[];
-  link?: string;
+  children: vRoute[];
 }
 /**
  * @description: vMenuType 路由类型
  * @enum 0 目录 1 菜单 2 按钮 3 外链 4 按钮
  */
 type vMenuType = 0 | 1 | 2 | 3 | 4;
+
+interface vUserInfoResponse {
+  info: vUserInfo;
+  routes: vRoute[];
+  permission: string[];
+}

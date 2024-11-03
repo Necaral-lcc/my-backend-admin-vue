@@ -18,19 +18,11 @@
 <script setup lang="ts">
 import { useUserStore } from "@/store/user";
 import { ElTag } from "element-plus";
-import { watch } from "vue";
 import { RouteRecordNormalized, useRoute, useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
-
-watch(
-  () => userStore.cacheViews,
-  val => {
-    console.log("cache views changed", val);
-  }
-);
 
 const toPage = (r: RouteRecordNormalized) => {
   router.push({ name: r.name });

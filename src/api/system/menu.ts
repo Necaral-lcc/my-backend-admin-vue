@@ -1,17 +1,13 @@
 import { apiAdmin } from "../api";
 
 export type vMenu = Omit<vRoute, "id" | "children"> & {
-  parentId: number;
   status: boolean;
   readonly id?: number;
   permission?: string;
 };
 
-export const getMenus = <T>(data: vPageParams) => {
-  return apiAdmin.get<vResponseData<vListResponse<T>>>(
-    "/admin-api/system/menu",
-    data
-  );
+export const getMenus = <T>() => {
+  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu");
 };
 
 export const getMenu = <T>(id: number) => {
@@ -31,4 +27,8 @@ export const createMenu = <T>(data: vMenu) => {
 };
 export const getMenuTree = <T>() => {
   return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu/options");
+};
+
+export const deleteMenu = (id: number) => {
+  return apiAdmin.delete<vResponseData<any>>(`/admin-api/system/menu/${id}`);
 };
