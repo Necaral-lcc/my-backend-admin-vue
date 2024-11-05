@@ -1,1 +1,0 @@
-import{d as n,f as a,o as r,c as u,b as l,e as p,w as d,h as i,u as m,E as f}from"./index-CzvhIu7P.js";const k=n({__name:"index",setup(x){const o=a(),s=t=>{o.push({path:t})};return(t,e)=>(r(),u("div",null,[e[2]||(e[2]=l("h1",null,"Dash",-1)),p(m(f),{type:"primary",onClick:e[0]||(e[0]=B=>s("/"))},{default:d(()=>e[1]||(e[1]=[i("home")])),_:1})]))}});export{k as default};

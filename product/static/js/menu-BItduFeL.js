@@ -1,1 +1,0 @@
-import{j as n}from"./index-CzvhIu7P.js";const s=()=>n.get("/admin-api/system/menu"),a=e=>n.get(`/admin-api/system/menu/${e}`),m=e=>n.put(`/admin-api/system/menu/${e.id}`,e),u=e=>n.post("/admin-api/system/menu",e),i=()=>n.get("/admin-api/system/menu/options"),r=e=>n.delete(`/admin-api/system/menu/${e}`);export{a,i as b,u as c,r as d,s as g,m as u};
