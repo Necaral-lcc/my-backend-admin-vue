@@ -21,17 +21,8 @@ const config: AxiosRequestConfig = {
   }
 };
 
-interface ApiAdminConfig {
-  limit?: number;
-}
-
 class ApiAdmin {
-  constructor(config?: ApiAdminConfig) {
-    const { limit } = config || {};
-    if (limit) {
-      ApiAdmin.limit = limit;
-    }
-
+  constructor() {
     this.initAxiosRequest();
     this.initAxiosResponse();
   }
@@ -41,8 +32,6 @@ class ApiAdmin {
   protected static pools = new Map();
 
   protected static tokenPools = new Map();
-
-  private static limit = 5;
 
   private static axiosInstance = axios.create(config);
 
