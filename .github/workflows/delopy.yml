@@ -31,16 +31,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
 
-      - name: Deploy
-        uses: cross-the-world/scp-pipeline@master
-        with:
-          host: ${{ secrets.SSH_HOST }} # 服务器IP（需要在GitHub上自行配置对应的secret）
-          user: ${{ secrets.SSH_USERNAME }} # 服务器用户名
-          pass: ${{ secrets.MY_PASSWORD }} # 服务器密码
-          connect_timeout: 10s
-          local: "." # 源路径（工作流）
-          remote: $SSH_URL # 目标路径（服务器）
-
       # 安装nodejs 18和yarn
       - name: setup node
         uses: actions/setup-node@v3
@@ -62,3 +52,13 @@ jobs:
         run: |
           pnpm build 
           ls -al
+
+      - name: Deploy
+        uses: cross-the-world/scp-pipeline@master
+        with:
+          host: ${{ secrets.SSH_HOST }} # 服务器IP（需要在GitHub上自行配置对应的secret）
+          user: ${{ secrets.SSH_USERNAME }} # 服务器用户名
+          pass: ${{ secrets.MY_PASSWORD }} # 服务器密码
+          connect_timeout: 10s
+          local: "./product" # 源路径（工作流）
+          remote: $SSH_URL # 目标路径（服务器）
