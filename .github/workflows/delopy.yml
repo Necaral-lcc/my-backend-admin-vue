@@ -22,33 +22,11 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       # 指纹
       SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOST }}
+      # 服务器密码
+      MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
+      # 文件路径
+      SSH_URL: "/usr/app/my-backend-admin-vue"
     steps:
-      # 创建ssh目录, 并启动ssh代理
-      - name: setup ssh
-        shell: bash
-        run: |
-          mkdir -p $HOME/.ssh
-      # 保存公钥到known_hosts
-      - name: configure ssh public key
-        shell: bash
-        run: echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-      # 保存私钥到ssh-agent
-      - name: setup ssh private key
-        shell: bash
-        run: |
-          # 启动ssh-agent
-          eval $(ssh-agent)
-          # 将进程信息保存到环境变量, 方便后面的程序使用, 如docker
-          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
-          echo "SSH_AGENT_PID=SSH_AGENT_PID" >> $GITHUB_ENV
-          # 将密钥添加的ssh-agent
-          echo "$SSH_PRIVATE_KEY" | ssh-add -
-      # 创建并使用docker远程上下文
-      - name: create and use docker remote context
-        shell: bash
-        run: |
-          docker context create remote --docker "host=ssh://$SSH_USERNAME@$SSH_HOST"
-          docker context use remote
       # 检出代码
       - name: checkout
         uses: actions/checkout@v3
@@ -71,14 +49,13 @@ jobs:
       # 构建
       - name: build
         run: pnpm build
-      # 移除历史镜像
-      - name: remove docker image and container
-        run: |
-          docker rm -f lcc-admin-vue || true
-          docker rmi -f lcc-admin-vue || true
-      # 构建docker镜像
-      - name: build docker image
-        run: docker build --no-cache -f Dockerfile -t lcc-admin-vue .
-      # 启动新的docker镜像
-      - name: start docker container
-        run: docker run -d -p 8001:80 --name lcc-admin-vue lcc-admin-vue
+
+      - name: Deploy
+        uses: cross-the-world/scp-pipeline@master
+        with:
+          host: $SSH_HOST # 服务器IP（需要在GitHub上自行配置对应的secret）
+          user: ${SSH_USERNAME # 服务器用户名
+          pass: $MY_PASSWORD # 服务器密码
+          connect_timeout: 10s
+          local: "./product" # 源路径（工作流）
+          remote: $SSH_URL # 目标路径（服务器）
