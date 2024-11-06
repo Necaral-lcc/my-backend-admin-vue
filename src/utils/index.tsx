@@ -12,8 +12,8 @@ export function toCamelCase(snakeCaseStr: string) {
   return snakeCaseStr.replace(/(\_\w)/g, m => m[1].toUpperCase());
 }
 
-export function menuArrToTree(arr: vMenuTree[]): vMenuTreeObj[] {
-  const root: vMenuTreeObj = {
+export function menuArrToTree(arr: vMenuTree[]): vTreeOption[] {
+  const root: vTreeOption = {
     value: 0,
     label: "主菜单",
     children: []
@@ -27,7 +27,7 @@ export const mapMenuTree = (ar: vMenuTree[], parentId: number) => {
   return ar
     .filter(item => item.parentId === parentId)
     .map(item => {
-      const obj: vMenuTreeObj = {
+      const obj: vTreeOption = {
         value: item.id,
         label: item.title,
         children: mapMenuTree(ar, item.id)

@@ -6,8 +6,11 @@
         type="primary"
         :icon="menuShow ? CaretRight : CaretLeft"
         @click="toggleMenus"
-        >{{ menuShow ? "收起菜单" : "展开菜单" }}</el-button
       >
+        <p v-if="appStore.level > 0">
+          {{ menuShow ? "收起菜单" : "展开菜单" }}
+        </p>
+      </el-button>
       <el-breadcrumb class="breadcrumb">
         <el-breadcrumb-item
           v-for="item in matched.filter(item => item.meta.title)"
@@ -60,7 +63,12 @@ defineProps({
   }
 });
 
-const matched = computed(() => route.matched);
+const matched = computed(() => {
+  if (appStore.level === 0) {
+    return [route.matched[route.matched.length - 1]];
+  }
+  return route.matched;
+});
 
 const emit = defineEmits(["toggleMenu"]);
 

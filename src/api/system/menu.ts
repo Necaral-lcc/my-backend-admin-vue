@@ -6,8 +6,8 @@ export type vMenu = Omit<vRoute, "id" | "children"> & {
   permission?: string;
 };
 
-export const getMenus = <T>() => {
-  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu");
+export const getMenus = <T>(data?: { parentId?: number }) => {
+  return apiAdmin.get<vResponseData<T[]>>("/admin-api/system/menu", data);
 };
 
 export const getMenu = <T>(id: number) => {
@@ -19,14 +19,14 @@ export const updateMenu = <T>(data: vMenu) => {
     data
   );
 };
-export const createMenu = <T>(data: vMenu) => {
-  return apiAdmin.post<vResponseData<vListResponse<T>>>(
-    "/admin-api/system/menu",
-    data
-  );
+export const createMenu = (data: vMenu) => {
+  return apiAdmin.post<vResponseData<any>>("/admin-api/system/menu", data);
+};
+export const getMenuOption = <T>() => {
+  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu/options");
 };
 export const getMenuTree = <T>() => {
-  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu/options");
+  return apiAdmin.get<vResponseData<T[]>>("/admin-api/system/menu/tree");
 };
 
 export const deleteMenu = (id: number) => {

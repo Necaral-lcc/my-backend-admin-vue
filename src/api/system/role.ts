@@ -22,11 +22,8 @@ export const updateRole = <T>(data: vRole & { id: number }) => {
     data
   );
 };
-export const createRole = <T>(data: vRole) => {
-  return apiAdmin.post<vResponseData<vListResponse<T>>>(
-    "/admin-api/system/role",
-    data
-  );
+export const createRole = (data: vRole) => {
+  return apiAdmin.post<vResponseData<any>>("/admin-api/system/role", data);
 };
 
 export const deleteRole = (id: number) => {

@@ -11,8 +11,23 @@
           >
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-          <el-form-item label="权限名">
-            <el-input v-model="queryForm.name" placeholder="请输入权限名" />
+          <el-form-item label="父级菜单">
+            <el-cascader
+              v-model="queryForm.parentId"
+              :options="[
+                {
+                  id: 0,
+                  name: '顶级部门',
+                  children: menuTreeOption
+                }
+              ]"
+              :show-all-levels="false"
+              :props="{
+                checkStrictly: true,
+                label: 'name',
+                value: 'id'
+              }"
+            />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
@@ -78,14 +93,19 @@
               @click="handleAddSubBtn(scope.row.id)"
               >{{ t("button.addBtn") }}</el-button
             >
-            <el-button text @click="handleEdit(scope.row.id)">编辑</el-button>
+            <el-button text @click="handleEdit(scope.row.id)">{{
+              t("button.edit")
+            }}</el-button>
             <el-popconfirm
               title="确认删除？"
               @confirm="handleDelete(scope.row.id)"
             >
               <template #reference>
-                <el-button v-permission="['system:menu:del']" text type="danger"
-                  >删除</el-button
+                <el-button
+                  v-permission="['system:menu:del']"
+                  text
+                  type="danger"
+                  >{{ t("button.delete") }}</el-button
                 >
               </template>
             </el-popconfirm>
@@ -184,11 +204,12 @@ import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   getMenus,
-  getMenuTree,
+  getMenuOption,
   createMenu,
   getMenu,
   updateMenu,
-  deleteMenu
+  deleteMenu,
+  getMenuTree
 } from "@/api/system/menu";
 import type { vDialogForm } from "@/types/module";
 import type { vMenu } from "@/api/system/menu";
@@ -202,12 +223,12 @@ defineOptions({
 });
 
 const queryForm = reactive({
-  name: ""
+  parentId: [0]
 });
 
-const menuTree = ref<vMenuTreeObj[]>([]);
+const menuTree = ref<vTreeOption[]>([]);
 
-const tableData = reactive<any>({
+const tableData = reactive<vListResponse<any>>({
   list: [],
   total: 0,
   page: 1,
@@ -234,12 +255,23 @@ const dialogForm = reactive<vDialogForm<vMenu>>({
   }
 });
 
+const menuTreeOption = ref<vToTree<vListOption>[]>([]);
+
 onMounted(() => {
-  getList();
+  init();
 });
 
+const init = () => {
+  getList();
+  getQueryMenuTree();
+};
+
 const getList = async () => {
-  const result = await getMenus();
+  const data = JSON.parse(JSON.stringify(queryForm));
+  if (Array.isArray(data.parentId)) {
+    data.parentId = data.parentId[data.parentId.length - 1];
+  }
+  const result = await getMenus(data);
   if (result.code === 200) {
     tableData.list = result.data;
   } else {
@@ -250,8 +282,17 @@ const getList = async () => {
   }
 };
 
-const getMenuTreeList = async () => {
-  const result = await getMenuTree<vMenuTree[]>();
+const getQueryMenuTree = async () => {
+  const res = await getMenuTree<vToTree<vListOption>>();
+  if (res.code === 200) {
+    menuTreeOption.value = res.data;
+  } else {
+    ElMessage.error(res.msg);
+  }
+};
+
+const getMenuOptionList = async () => {
+  const result = await getMenuOption<vMenuTree[]>();
   if (result.code === 200) {
     menuTree.value = menuArrToTree(result.data);
   } else {
@@ -261,7 +302,7 @@ const getMenuTreeList = async () => {
 
 const handleAddRootMenu = () => {
   dialogForm.type = "add";
-  getMenuTreeList();
+  getMenuOptionList();
   dialogForm.visible = true;
   dialogForm.title = "新增一级菜单";
   dialogForm.data = {
@@ -272,7 +313,7 @@ const handleAddRootMenu = () => {
 
 const handleAddSubMenu = (parentId: number) => {
   dialogForm.type = "add";
-  getMenuTreeList();
+  getMenuOptionList();
   dialogForm.visible = true;
   dialogForm.title = "新增二级菜单";
   dialogForm.data = {
@@ -283,7 +324,7 @@ const handleAddSubMenu = (parentId: number) => {
 };
 const handleAddSubBtn = (parentId: number) => {
   dialogForm.type = "add";
-  getMenuTreeList();
+  getMenuOptionList();
   dialogForm.visible = true;
   dialogForm.title = "新增按钮";
   dialogForm.data = {
@@ -300,7 +341,7 @@ const handleEdit = async (id: number) => {
     dialogForm.visible = true;
     dialogForm.title = "编辑菜单";
     dialogForm.data = result.data;
-    getMenuTreeList();
+    getMenuOptionList();
   } else {
     ElMessage.error(result.msg);
   }
@@ -350,7 +391,7 @@ const handleQuery = () => {
 };
 
 const handleReset = () => {
-  queryForm.name = "";
+  queryForm.parentId = [0];
   getList();
 };
 </script>

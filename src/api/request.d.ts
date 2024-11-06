@@ -24,6 +24,10 @@ interface vListResponse<T = any> extends vPageParams {
   total: number;
 }
 
+type vToTree<T extends { id: number; parentId: number }> = T & {
+  children: vToTree<T>[];
+};
+
 /**
  * 管理员用户
  * @interface vAdminUser
@@ -47,4 +51,26 @@ interface vAdminUser {
   status: boolean;
 }
 
+interface vAdminUserTable extends vAdminUser, vTime {
+  role?: Pick<vRole, "id" | "name">;
+  dept?: Pick<vDept, "id" | "name">;
+}
+
 type vAdminUserForm = Partial<vAdminUser>;
+
+/**
+ * 部门
+ * @interface vDept
+ * @property {number} id - 部门ID
+ * @property {string} name - 部门名称
+ * @property {string} description - 部门描述
+ * @property {boolean} status - 部门状态
+ * @property {number} parentId - 父级部门ID
+ */
+interface vDept {
+  readonly id: number;
+  name: string;
+  description: string;
+  status: boolean;
+  parentId: number;
+}

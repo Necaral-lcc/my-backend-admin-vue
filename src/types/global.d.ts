@@ -4,10 +4,16 @@ interface vMenuTree {
   parentId: number;
 }
 
-interface vMenuTreeObj {
+interface vTreeOption {
   value: number;
   label: string;
-  children?: vMenuTreeObj[];
+  children?: vTreeOption[];
+}
+
+interface vListOption {
+  id: number;
+  name: string;
+  parentId: number;
 }
 
 interface vOption {

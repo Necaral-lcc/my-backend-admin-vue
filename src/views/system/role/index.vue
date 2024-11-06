@@ -84,8 +84,9 @@
             ref="treeRef"
             :data="dialogForm.menuTree"
             show-checkbox
-            node-key="value"
+            node-key="id"
             empty-text="无权限"
+            :props="{ label: 'title', children: 'children' }"
             :check-strictly="true"
             @check-change="handleMenuTreeChange"
           />
@@ -126,8 +127,7 @@ import {
   updateRole,
   type vRole
 } from "@/api/system/role";
-import { getMenuTree } from "@/api/system/menu";
-import { mapMenuTree } from "@/utils";
+import { getMenuOption } from "@/api/system/menu";
 
 const { t } = useI18n();
 
@@ -152,7 +152,7 @@ const treeRef = ref<InstanceType<typeof ElTree>>();
 
 const dialogForm = reactive<
   vDialogForm<vRole & { id?: number }> & {
-    menuTree: vMenuTreeObj[];
+    menuTree: vToTree<vListOption>[];
   }
 >({
   visible: false,
@@ -189,9 +189,9 @@ const getList = async () => {
 };
 
 const getMenuTreeData = async () => {
-  const res = await getMenuTree<vMenuTree[]>();
+  const res = await getMenuOption<vToTree<vListOption>[]>();
   if (res.code === 200) {
-    const list = mapMenuTree(res.data, 0);
+    const list = res.data;
     dialogForm.menuTree = list;
     return res.data;
   } else {

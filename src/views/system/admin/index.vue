@@ -36,6 +36,17 @@
       <el-table-column label="用户名" prop="name" align="center" />
       <el-table-column label="昵称" prop="nickname" align="center" />
       <el-table-column label="邮箱号" prop="email" align="center" />
+      <el-table-column label="角色" prop="role" align="center">
+        <template #default="scope">
+          <div v-if="scope.row.role">{{ scope.row.role.name }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="部门" prop="dept" align="center">
+        <template #default="scope">
+          <div v-if="scope.row.dept">{{ scope.row.dept.name }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="邮箱号" prop="email" align="center" />
       <el-table-column label="创建时间" prop="createdAt" align="center">
         <template #default="scope">{{
           utcToLocalTime(scope.row.createdAt)
@@ -52,7 +63,7 @@
             v-permission="['system:admin:edit']"
             text
             @click="handleEdit(scope.row.id)"
-            >编辑</el-button
+            >{{ t("button.edit") }}</el-button
           >
           <el-button
             v-if="scope.row.id !== 1"
@@ -60,7 +71,7 @@
             type="danger"
             text
             @click="handleDelete(scope.row.id)"
-            >删除</el-button
+            >{{ t("button.delete") }}</el-button
           >
         </template>
       </el-table-column>
@@ -114,6 +125,18 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="部门" prop="deptId">
+          <el-cascader
+            v-model="dialogForm.data.deptId"
+            :options="dialogForm.deptList"
+            :show-all-levels="false"
+            :props="{
+              checkStrictly: true,
+              label: 'name',
+              value: 'id'
+            }"
+          />
+        </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-switch v-model="dialogForm.data.status" />
         </el-form-item>
@@ -142,6 +165,7 @@ import {
   ElSwitch,
   ElSelect,
   ElOption,
+  ElCascader,
   ElMessage
 } from "element-plus";
 import type { FormInstance } from "element-plus";
@@ -157,6 +181,8 @@ import {
 import { utcToLocalTime } from "@/utils/date";
 import type { vDialogForm } from "@/types/module";
 import { getRoleOptions } from "@/api/system/role";
+import { getDeptOptions } from "@/api/system/dept";
+import { listToTree } from "@/utils/tool";
 
 defineOptions({
   name: "systemAdmin"
@@ -171,7 +197,7 @@ const queryForm = reactive({
   pageSize: 10
 });
 
-const tableData = reactive<vListResponse<vAdminUser & vTime>>({
+const tableData = reactive<vListResponse<vAdminUserTable>>({
   list: [],
   total: 0,
   page: 1,
@@ -181,6 +207,7 @@ const tableData = reactive<vListResponse<vAdminUser & vTime>>({
 const dialogForm = reactive<
   vDialogForm<vAdminUserForm> & {
     roleList: vOption[];
+    deptList: Array<ITree<vListOption>>;
   }
 >({
   visible: false,
@@ -193,6 +220,7 @@ const dialogForm = reactive<
   },
   title: "编辑管理员",
   roleList: [],
+  deptList: [],
   type: "add",
   rules: {
     name: [
@@ -239,6 +267,15 @@ const getRoleList = async () => {
   }
 };
 
+const getDeptList = async () => {
+  const res = await getDeptOptions();
+  if (res.code === 200) {
+    dialogForm.deptList = listToTree(res.data, 0);
+  } else {
+    dialogForm.deptList = [];
+  }
+};
+
 const handleQuery = async () => {
   getList();
 };
@@ -246,6 +283,7 @@ const handleQuery = async () => {
 const handleAdd = () => {
   dialogForm.type = "add";
   getRoleList();
+  getDeptList();
   dialogForm.visible = true;
   dialogForm.title = "新增管理员";
   resetDialogForm();
@@ -273,6 +311,7 @@ const handleEdit = async (id: number) => {
     dialogForm.title = "编辑管理员";
     dialogForm.data = res.data;
     getRoleList();
+    getDeptList();
   } else {
     ElMessage.error(res.msg);
   }
@@ -281,8 +320,12 @@ const handleEdit = async (id: number) => {
 const handleSubmit = async () => {
   dialogFormRef.value?.validate(async (valid: boolean) => {
     if (valid) {
+      const data = JSON.parse(JSON.stringify(dialogForm.data));
+      if (Array.isArray(data.deptId)) {
+        data.deptId = data.deptId[data.deptId.length - 1];
+      }
       if (dialogForm.type === "add") {
-        const res = await createAdminUser(dialogForm.data);
+        const res = await createAdminUser(data);
         if (res.code === 200) {
           dialogForm.visible = false;
           resetDialogForm();
@@ -292,11 +335,8 @@ const handleSubmit = async () => {
           ElMessage.error(res.msg);
         }
       } else if (dialogForm.type === "edit") {
-        if (dialogForm.data.id) {
-          const res = await updateAdminUser(
-            dialogForm.data.id,
-            dialogForm.data
-          );
+        if (data.id) {
+          const res = await updateAdminUser(data.id, data);
           if (res.code === 200) {
             dialogForm.visible = false;
             resetDialogForm();
