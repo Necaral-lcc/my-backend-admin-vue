@@ -18,17 +18,30 @@
 <script setup lang="ts">
 import { useUserStore } from "@/store/user";
 import { ElTag } from "element-plus";
-import { RouteRecordNormalized, useRoute, useRouter } from "vue-router";
+import { watch } from "vue";
+import { RouteLocationNormalizedLoaded, useRoute, useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 
-const toPage = (r: RouteRecordNormalized) => {
+watch(
+  () => route.fullPath,
+  val => {
+    if (val === "/") {
+      return;
+    } else {
+      const r = JSON.parse(JSON.stringify(route));
+      userStore.addCacheView(r);
+    }
+  }
+);
+
+const toPage = (r: RouteLocationNormalizedLoaded) => {
   router.push({ name: r.name });
 };
 
-const closePage = (r: RouteRecordNormalized) => {
+const closePage = (r: RouteLocationNormalizedLoaded) => {
   userStore.removeCacheView(r);
   if (userStore.getCacheViews.length > 0) {
     router.replace({
@@ -44,7 +57,7 @@ const toHome = () => {
 };
 
 const getTagType = (
-  r: RouteRecordNormalized,
+  r: RouteLocationNormalizedLoaded,
   name?: string | symbol
 ): (typeof ElTag)["type"] => {
   if (r.name === name) {

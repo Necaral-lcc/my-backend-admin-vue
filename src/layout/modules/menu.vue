@@ -44,9 +44,6 @@ import { computed, onBeforeMount, ref } from "vue";
 import { ElMenu, ElMenuItem, ElSubMenu, ElIcon } from "element-plus";
 import { Location, Document } from "@element-plus/icons-vue";
 import { useRouter, useRoute } from "vue-router";
-import { useUserStore } from "@/store/user";
-
-const userStore = useUserStore();
 
 const name = ref(import.meta.env.VITE_APP_TITLE);
 const router = useRouter();
@@ -87,13 +84,7 @@ const jumpUrl = (url: string) => {
 };
 
 const toPage = (name: string) => {
-  // router.push({ name });
-  const routerExits = router.getRoutes();
-  const tarRouter = routerExits.find(item => item.name === name);
-  if (tarRouter) {
-    userStore.addCacheView(tarRouter);
-    router.push(tarRouter.path);
-  }
+  router.push({ name });
   $emit("jump");
 };
 </script>

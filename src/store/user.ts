@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { getUserInfo } from "@/api";
 import { convertRouters } from "@/utils/route";
-import type { RouteRecordNormalized, RouteRecordRaw } from "vue-router";
+import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from "vue-router";
 import { removeToken } from "@/utils/auth";
 import router from "@/router";
 import { homeRouter, homeRouterName } from "@/router/public";
@@ -18,7 +18,7 @@ const routers_default: vRoute[] = [];
 
 const permission_default: string[] = [];
 
-const viewArr: RouteRecordNormalized[] = [];
+const viewArr: RouteLocationNormalizedLoaded[] = [];
 
 export const useUserStore = defineStore("user", {
   state() {
@@ -79,14 +79,14 @@ export const useUserStore = defineStore("user", {
       this.routers = routers_default;
       this.permission = permission_default;
     },
-    addCacheView(view: RouteRecordNormalized) {
+    addCacheView(view: RouteLocationNormalizedLoaded) {
       const index = this.cacheViews.findIndex(item => item.name === view.name);
       if (index >= 0) {
         return;
       }
       this.cacheViews.push(view);
     },
-    removeCacheView(view: RouteRecordNormalized) {
+    removeCacheView(view: RouteLocationNormalizedLoaded) {
       this.cacheViews = this.cacheViews.filter(item => item.name !== view.name);
     },
     clearCacheViews() {
