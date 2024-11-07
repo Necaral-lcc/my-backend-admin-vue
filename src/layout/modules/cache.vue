@@ -16,14 +16,22 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from "@/store/user";
+import { useUserStore, type vCacheView } from "@/store/user";
 import { ElTag } from "element-plus";
-import { watch } from "vue";
-import { RouteLocationNormalizedLoaded, useRoute, useRouter } from "vue-router";
+import { onMounted, watch } from "vue";
+import {
+  type RouteLocationNormalizedLoadedGeneric,
+  useRoute,
+  useRouter
+} from "vue-router";
 
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
+
+onMounted(() => {
+  addCacheView(route);
+});
 
 watch(
   () => route.fullPath,
@@ -31,17 +39,24 @@ watch(
     if (val === "/") {
       return;
     } else {
-      const r = JSON.parse(JSON.stringify(route));
-      userStore.addCacheView(r);
+      addCacheView(route);
     }
   }
 );
 
-const toPage = (r: RouteLocationNormalizedLoaded) => {
+const addCacheView = (r: RouteLocationNormalizedLoadedGeneric) => {
+  userStore.addCacheView({
+    name: r.name,
+    meta: r.meta,
+    path: r.path
+  });
+};
+
+const toPage = (r: vCacheView) => {
   router.push({ name: r.name });
 };
 
-const closePage = (r: RouteLocationNormalizedLoaded) => {
+const closePage = (r: vCacheView) => {
   userStore.removeCacheView(r);
   if (userStore.getCacheViews.length > 0) {
     router.replace({
@@ -57,7 +72,7 @@ const toHome = () => {
 };
 
 const getTagType = (
-  r: RouteLocationNormalizedLoaded,
+  r: vCacheView,
   name?: string | symbol
 ): (typeof ElTag)["type"] => {
   if (r.name === name) {

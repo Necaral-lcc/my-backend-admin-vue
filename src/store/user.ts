@@ -18,7 +18,12 @@ const routers_default: vRoute[] = [];
 
 const permission_default: string[] = [];
 
-const viewArr: RouteLocationNormalizedLoaded[] = [];
+const viewArr: vCacheView[] = [];
+
+export type vCacheView = Pick<
+  RouteLocationNormalizedLoaded,
+  "name" | "path" | "meta"
+>;
 
 export const useUserStore = defineStore("user", {
   state() {
@@ -79,14 +84,14 @@ export const useUserStore = defineStore("user", {
       this.routers = routers_default;
       this.permission = permission_default;
     },
-    addCacheView(view: RouteLocationNormalizedLoaded) {
+    addCacheView(view: vCacheView) {
       const index = this.cacheViews.findIndex(item => item.name === view.name);
       if (index >= 0) {
         return;
       }
       this.cacheViews.push(view);
     },
-    removeCacheView(view: RouteLocationNormalizedLoaded) {
+    removeCacheView(view: vCacheView) {
       this.cacheViews = this.cacheViews.filter(item => item.name !== view.name);
     },
     clearCacheViews() {
