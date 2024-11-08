@@ -173,7 +173,7 @@ const dialogForm = reactive<
 
 onMounted(() => {
   getList();
-  getMenuTreeData();
+  getQueryMenuOption();
 });
 
 const getList = async () => {
@@ -188,15 +188,13 @@ const getList = async () => {
   }
 };
 
-const getMenuTreeData = async () => {
-  const res = await getMenuOption<vToTree<vListOption>[]>();
+const getQueryMenuOption = async () => {
+  const res = await getMenuOption<vToTree<vListOption>>();
   if (res.code === 200) {
-    const list = res.data;
-    dialogForm.menuTree = list;
-    return res.data;
+    dialogForm.menuTree = res.data;
   } else {
     ElMessage.error(res.msg);
-    return [];
+    dialogForm.menuTree = [];
   }
 };
 

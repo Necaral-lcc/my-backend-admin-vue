@@ -25,11 +25,6 @@ export const deleteDept = (id: number) => {
   return apiAdmin.delete<vResponseData<any>>(`/admin-api/system/dept/${id}`);
 };
 
-export const getDeptOptions = () => {
-  return apiAdmin.get<vResponseData<vListOption[]>>(
-    "/admin-api/system/dept/options"
-  );
-};
 export const getDeptTree = () => {
   return apiAdmin.get<vResponseData<Array<vToTree<vListOption>>>>(
     "/admin-api/system/dept/tree"

@@ -181,8 +181,7 @@ import {
 import { utcToLocalTime } from "@/utils/date";
 import type { vDialogForm } from "@/types/module";
 import { getRoleOptions } from "@/api/system/role";
-import { getDeptOptions } from "@/api/system/dept";
-import { listToTree } from "@/utils/tool";
+import { getDeptTree } from "@/api/system/dept";
 
 defineOptions({
   name: "systemAdmin"
@@ -245,6 +244,7 @@ const dialogFormRef = ref<FormInstance>();
 
 onMounted(() => {
   getList();
+  getQueryDeptTree();
 });
 
 const getList = async () => {
@@ -267,10 +267,10 @@ const getRoleList = async () => {
   }
 };
 
-const getDeptList = async () => {
-  const res = await getDeptOptions();
+const getQueryDeptTree = async () => {
+  const res = await getDeptTree();
   if (res.code === 200) {
-    dialogForm.deptList = listToTree(res.data, 0);
+    dialogForm.deptList = res.data;
   } else {
     dialogForm.deptList = [];
   }
@@ -283,7 +283,7 @@ const handleQuery = async () => {
 const handleAdd = () => {
   dialogForm.type = "add";
   getRoleList();
-  getDeptList();
+  getQueryDeptTree();
   dialogForm.visible = true;
   dialogForm.title = "新增管理员";
   resetDialogForm();
@@ -311,7 +311,7 @@ const handleEdit = async (id: number) => {
     dialogForm.title = "编辑管理员";
     dialogForm.data = res.data;
     getRoleList();
-    getDeptList();
+    getQueryDeptTree();
   } else {
     ElMessage.error(res.msg);
   }

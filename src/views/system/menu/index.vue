@@ -14,17 +14,12 @@
           <el-form-item label="父级菜单">
             <el-cascader
               v-model="queryForm.parentId"
-              :options="[
-                {
-                  id: 0,
-                  name: '顶级部门',
-                  children: menuTreeOption
-                }
-              ]"
+              :options="menuOption"
+              clearable
               :show-all-levels="false"
               :props="{
                 checkStrictly: true,
-                label: 'name',
+                label: 'title',
                 value: 'id'
               }"
             />
@@ -139,10 +134,13 @@
         <el-form-item label="父级菜单" prop="parentId">
           <el-cascader
             v-model="dialogForm.data.parentId"
-            :options="menuTree"
+            :options="menuOption"
             :show-all-levels="false"
+            clearable
             :props="{
-              checkStrictly: true
+              checkStrictly: true,
+              label: 'title',
+              value: 'id'
             }"
           />
         </el-form-item>
@@ -208,12 +206,10 @@ import {
   createMenu,
   getMenu,
   updateMenu,
-  deleteMenu,
-  getMenuTree
+  deleteMenu
 } from "@/api/system/menu";
 import type { vDialogForm } from "@/types/module";
 import type { vMenu } from "@/api/system/menu";
-import { menuArrToTree } from "@/utils";
 import { pageTypeList, dialogFormData_default } from "./data";
 
 const { t } = useI18n();
@@ -226,7 +222,7 @@ const queryForm = reactive({
   parentId: [0]
 });
 
-const menuTree = ref<vTreeOption[]>([]);
+const menuOption = ref<vToTree<vListOption>[]>([]);
 
 const tableData = reactive<vListResponse<any>>({
   list: [],
@@ -255,21 +251,21 @@ const dialogForm = reactive<vDialogForm<vMenu>>({
   }
 });
 
-const menuTreeOption = ref<vToTree<vListOption>[]>([]);
-
 onMounted(() => {
   init();
 });
 
 const init = () => {
   getList();
-  getQueryMenuTree();
+  getQueryMenuOption();
 };
 
 const getList = async () => {
   const data = JSON.parse(JSON.stringify(queryForm));
-  if (Array.isArray(data.parentId)) {
+  if (Array.isArray(data.parentId) && data.parentId.length > 0) {
     data.parentId = data.parentId[data.parentId.length - 1];
+  } else {
+    data.parentId = null;
   }
   const result = await getMenus(data);
   if (result.code === 200) {
@@ -282,27 +278,17 @@ const getList = async () => {
   }
 };
 
-const getQueryMenuTree = async () => {
-  const res = await getMenuTree<vToTree<vListOption>>();
-  if (res.code === 200) {
-    menuTreeOption.value = res.data;
-  } else {
-    ElMessage.error(res.msg);
-  }
-};
-
-const getMenuOptionList = async () => {
-  const result = await getMenuOption<vMenuTree[]>();
+const getQueryMenuOption = async () => {
+  const result = await getMenuOption<vToTree<vListOption>>();
   if (result.code === 200) {
-    menuTree.value = menuArrToTree(result.data);
+    menuOption.value = result.data;
   } else {
-    menuTree.value = menuArrToTree([]);
+    menuOption.value = [];
   }
 };
 
 const handleAddRootMenu = () => {
   dialogForm.type = "add";
-  getMenuOptionList();
   dialogForm.visible = true;
   dialogForm.title = "新增一级菜单";
   dialogForm.data = {
@@ -313,7 +299,6 @@ const handleAddRootMenu = () => {
 
 const handleAddSubMenu = (parentId: number) => {
   dialogForm.type = "add";
-  getMenuOptionList();
   dialogForm.visible = true;
   dialogForm.title = "新增二级菜单";
   dialogForm.data = {
@@ -324,7 +309,6 @@ const handleAddSubMenu = (parentId: number) => {
 };
 const handleAddSubBtn = (parentId: number) => {
   dialogForm.type = "add";
-  getMenuOptionList();
   dialogForm.visible = true;
   dialogForm.title = "新增按钮";
   dialogForm.data = {
@@ -341,7 +325,6 @@ const handleEdit = async (id: number) => {
     dialogForm.visible = true;
     dialogForm.title = "编辑菜单";
     dialogForm.data = result.data;
-    getMenuOptionList();
   } else {
     ElMessage.error(result.msg);
   }
@@ -349,8 +332,12 @@ const handleEdit = async (id: number) => {
 
 const handleSubmit = async () => {
   const data = JSON.parse(JSON.stringify(dialogForm.data));
-  if (Array.isArray(data.parentId)) {
+  if (Array.isArray(data.parentId) && data.parentId.length > 0) {
     data.parentId = data.parentId[data.parentId.length - 1];
+  } else if (typeof data.parentId === "number") {
+    data.parentId = data.parentId;
+  } else {
+    data.parentId = null;
   }
   if (dialogForm.type === "edit") {
     if (!data.id) {
@@ -391,7 +378,7 @@ const handleQuery = () => {
 };
 
 const handleReset = () => {
-  queryForm.parentId = [0];
+  queryForm.parentId = [];
   getList();
 };
 </script>

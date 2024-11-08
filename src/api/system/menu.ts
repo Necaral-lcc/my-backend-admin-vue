@@ -23,10 +23,7 @@ export const createMenu = (data: vMenu) => {
   return apiAdmin.post<vResponseData<any>>("/admin-api/system/menu", data);
 };
 export const getMenuOption = <T>() => {
-  return apiAdmin.get<vResponseData<T>>("/admin-api/system/menu/options");
-};
-export const getMenuTree = <T>() => {
-  return apiAdmin.get<vResponseData<T[]>>("/admin-api/system/menu/tree");
+  return apiAdmin.get<vResponseData<T[]>>("/admin-api/system/menu/options");
 };
 
 export const deleteMenu = (id: number) => {
