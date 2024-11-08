@@ -110,6 +110,7 @@
               label: 'name',
               value: 'id'
             }"
+            clearable
           />
         </el-form-item>
         <el-form-item label="名称" prop="name">
@@ -241,7 +242,7 @@ const handleQuery = () => {
 };
 
 const handleReset = () => {
-  queryForm.parentId = [0];
+  queryForm.parentId = [];
   getList();
 };
 
@@ -283,8 +284,10 @@ const handleSubmit = async () => {
   dialogFormRef.value?.validate(async (valid: boolean) => {
     if (valid) {
       const data = JSON.parse(JSON.stringify(dialogForm.data));
-      if (Array.isArray(data.parentId)) {
+      if (Array.isArray(data.parentId) && data.parentId.length > 0) {
         data.parentId = data.parentId[data.parentId.length - 1];
+      } else {
+        data.parentId = null;
       }
       if (dialogForm.type === "add") {
         const res = await createDept(data);
