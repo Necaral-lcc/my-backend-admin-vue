@@ -23,7 +23,7 @@ export const getPlugins = (isCompress: boolean = false) => {
       typescript: true,
       eslint: {
         lintCommand: `eslint ${pathResolve(
-          "../{src,mock,build}/**/*.{vue,js,ts,tsx}"
+          "../{src,build}/**/*.{vue,js,ts,tsx}"
         )}`,
         useFlatConfig: true
       },
