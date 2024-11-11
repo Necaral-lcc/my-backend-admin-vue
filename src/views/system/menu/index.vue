@@ -219,7 +219,7 @@ defineOptions({
 });
 
 const queryForm = reactive({
-  parentId: [0]
+  parentId: []
 });
 
 const menuOption = ref<vToTree<vListOption>[]>([]);

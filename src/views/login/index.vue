@@ -39,8 +39,8 @@ const route = useRoute();
 
 const formRef = ref<FormInstance>();
 const form = reactive({
-  username: "",
-  password: ""
+  username: "necaral",
+  password: "LCCqwe123"
 });
 
 const rules = reactive({

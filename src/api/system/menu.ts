@@ -20,12 +20,17 @@ export const updateMenu = <T>(data: vMenu) => {
   );
 };
 export const createMenu = (data: vMenu) => {
-  return apiAdmin.post<vResponseData<any>>("/admin-api/system/menu", data);
+  return apiAdmin.post<vResponseData<undefined>>(
+    "/admin-api/system/menu",
+    data
+  );
 };
 export const getMenuOption = <T>() => {
   return apiAdmin.get<vResponseData<T[]>>("/admin-api/system/menu/options");
 };
 
 export const deleteMenu = (id: number) => {
-  return apiAdmin.delete<vResponseData<any>>(`/admin-api/system/menu/${id}`);
+  return apiAdmin.delete<vResponseData<undefined>>(
+    `/admin-api/system/menu/${id}`
+  );
 };

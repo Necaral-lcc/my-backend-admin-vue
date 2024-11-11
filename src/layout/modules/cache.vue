@@ -35,21 +35,19 @@ onMounted(() => {
 
 watch(
   () => route.fullPath,
-  val => {
-    if (val === "/") {
-      return;
-    } else {
-      addCacheView(route);
-    }
+  _ => {
+    addCacheView(route);
   }
 );
 
 const addCacheView = (r: RouteLocationNormalizedLoadedGeneric) => {
-  userStore.addCacheView({
-    name: r.name,
-    meta: r.meta,
-    path: r.path
-  });
+  if (r.path !== "/") {
+    userStore.addCacheView({
+      name: r.name,
+      meta: r.meta,
+      path: r.path
+    });
+  }
 };
 
 const toPage = (r: vCacheView) => {
