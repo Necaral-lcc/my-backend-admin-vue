@@ -4,7 +4,7 @@
       <el-row :gutter="24">
         <el-col :span="24">
           <el-button
-            v-permission="['system:admin:add']"
+            v-permission="['blog:user:add']"
             type="primary"
             @click="handleAdd"
             >{{ t("button.add") }}</el-button
@@ -53,14 +53,13 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
-            v-permission="['system:admin:edit']"
+            v-permission="['blog:user:edit']"
             text
             @click="handleEdit(scope.row.id)"
             >{{ t("button.edit") }}</el-button
           >
           <el-button
-            v-if="scope.row.id !== 1"
-            v-permission="['system:admin:del']"
+            v-permission="['blog:user:del']"
             type="danger"
             text
             @click="handleDelete(scope.row.id)"
