@@ -15,64 +15,60 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   NProgress.start();
   const userStore = useUserStore();
+  const isUserLoggedIn = isLogin() && userStore.getLoginState;
+
   if (to.meta.title && typeof to.meta.title === "string") {
     document.title = to.meta.title as string;
   }
-  if (isLogin()) {
-    if (userStore.getLoginState) {
-      if (to.name === "login") {
-        NProgress.done();
-        return {
-          path: "/"
-        };
-      }
-      if (!to.name) {
-        NProgress.done();
-        return {
-          path: "/404"
-        };
-      }
-      NProgress.done();
-    } else {
-      const result = await userStore.getUser();
-      if (Array.isArray(result) && result.length > 0) {
-        userStore.login();
-        router.removeRoute(homeRouterName);
-        router.addRoute(addToHomeRouter(homeRouter, result));
-        const routesExist = router.getRoutes();
-        const routeExists = routesExist.filter(r => r.path === to.path);
 
-        NProgress.done();
-        return {
-          path: routeExists.length ? to.fullPath : "/",
-          replace: true
-        };
-      } else {
-        removeToken();
-        userStore.logout();
-        NProgress.done();
-        return {
-          path: `/login?redirect=${encodeURIComponent(to.fullPath)}`
-        };
-      }
+  if (isUserLoggedIn) {
+    if (to.name === "login") {
+      NProgress.done();
+      return { path: "/" };
     }
+
+    if (!to.name) {
+      NProgress.done();
+      return { path: "/404" };
+    }
+
+    NProgress.done();
   } else {
     if (!to.name) {
       NProgress.done();
-
-      return {
-        name: "404"
-      };
+      return { name: "404" };
     }
+
     if (to.meta.needLogin) {
+      NProgress.done();
+      return { name: "login" };
+    }
+
+    const result = await userStore.getUser();
+    if (Array.isArray(result) && result.length > 0) {
+      userStore.login();
+      router.removeRoute(homeRouterName);
+      router.addRoute(addToHomeRouter(homeRouter, result));
+
+      const routeExists = router.getRoutes().some(r => r.path === to.path);
       NProgress.done();
 
       return {
-        name: "login"
+        path: routeExists ? to.fullPath : "/",
+        replace: true
+      };
+    } else {
+      removeToken();
+      userStore.logout();
+      NProgress.done();
+
+      return {
+        path: `/login?redirect=${encodeURIComponent(to.fullPath)}`
       };
     }
-    NProgress.done();
   }
+
+  NProgress.done();
 });
 
 router.afterEach((to, from, failure) => {
