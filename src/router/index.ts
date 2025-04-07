@@ -15,13 +15,14 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   NProgress.start();
   const userStore = useUserStore();
-  const isUserLoggedIn = isLogin() && userStore.getLoginState;
 
   if (to.meta.title && typeof to.meta.title === "string") {
     document.title = to.meta.title as string;
   }
 
-  if (isUserLoggedIn) {
+  console.log("router", userStore.getLoginState, isLogin());
+
+  if (userStore.getLoginState) {
     if (to.name === "login") {
       NProgress.done();
       return { path: "/" };
@@ -33,15 +34,10 @@ router.beforeEach(async (to, _from) => {
     }
 
     NProgress.done();
-  } else {
+  } else if (isLogin()) {
     if (!to.name) {
       NProgress.done();
       return { name: "404" };
-    }
-
-    if (to.meta.needLogin) {
-      NProgress.done();
-      return { name: "login" };
     }
 
     const result = await userStore.getUser();
@@ -66,6 +62,19 @@ router.beforeEach(async (to, _from) => {
         path: `/login?redirect=${encodeURIComponent(to.fullPath)}`
       };
     }
+  } else {
+    if (to.name === "login") {
+      NProgress.done();
+      return;
+    }
+
+    if (to.meta.needLogin) {
+      NProgress.done();
+      return { name: "login" };
+    }
+
+    NProgress.done();
+    return;
   }
 
   NProgress.done();
